@@ -49,7 +49,8 @@ details.ub-foot summary { cursor: pointer; }
 </style>
 
 <div class="ub">
-  <h1 class="ub-title" id="titulo">Mis inversiones en Urbanitae</h1>
+  <h1 class="ub-title" id="titulo">Inversiones en Urbanitae</h1>
+  <div class="ub-bar" id="titulares"><select class="dash-select" id="filtro-titular" aria-label="Titular"><option value="">Todos</option><option value="fj">Yo</option><option value="padre">Padre</option></select></div>
   <p class="ub-lede" id="resumen-frase">Tienes <b data-draw="t-inv" data-source="kpis" data-row="0" data-field="invertido_en_curso">—</b> invertidos en <b data-draw="t-n" data-source="kpis" data-row="0" data-field="n_en_curso">—</b> proyectos en curso. Urbanitae prevé devolverte <b data-draw="t-tot" data-source="kpis" data-row="0" data-field="total_esperado">—</b>, un beneficio de <b data-draw="t-ben" data-source="kpis" data-row="0" data-field="beneficio_esperado">—</b> (<b data-draw="t-rent" data-source="kpis" data-row="0" data-field="rentabilidad_pct">—</b>). El próximo vencimiento previsto es <b data-draw="t-prox" data-source="kpis" data-row="0" data-field="proximo_proyecto">—</b> en <b data-draw="t-proxq" data-source="kpis" data-row="0" data-field="proximo_trimestre">—</b>.</p>
 
   <div class="ub-tabs" role="tablist" id="pestanas">
@@ -88,7 +89,7 @@ details.ub-foot summary { cursor: pointer; }
       <h2 class="ub-h">Próximos vencimientos</h2>
       <p class="ub-cap">Los seis proyectos en curso con devolución prevista más cercana.</p>
       <div class="ub-scroll">
-        <table class="ub-table" data-source="inversiones" data-row-key="id">
+        <table class="ub-table" data-source="inv" data-row-key="titular,id">
           <thead><tr><th data-field="proyecto">Proyecto</th><th data-field="vencimiento_trimestre">Vence</th><th data-field="importe_invertido">Invertido</th><th data-field="pendiente_hasta_total_bruto">Por cobrar</th><th data-field="rentabilidad_total_pct">Rentab.</th></tr></thead>
           <tbody data-draw="tb-prox"></tbody>
         </table>
@@ -117,9 +118,10 @@ details.ub-foot summary { cursor: pointer; }
       <h2 class="ub-h">Detalle por proyecto</h2>
       <p class="ub-cap">Importes en bruto. «Total esperado» es lo que Urbanitae prevé devolverte en total, incluido el capital.</p>
       <div class="ub-scroll">
-        <table class="ub-table" data-source="inversiones" data-row-key="id">
+        <table class="ub-table" data-source="inv" data-row-key="titular,id">
           <thead><tr>
             <th data-field="proyecto">Proyecto</th>
+            <th data-field="titular" class="ub-l">Titular</th>
             <th data-field="modelo" class="ub-l">Tipo</th>
             <th data-field="fecha_inversion">Invertido el</th>
             <th data-field="importe_invertido">Invertido</th>
@@ -150,7 +152,7 @@ details.ub-foot summary { cursor: pointer; }
         <h2 class="ub-h">Próximos cobros</h2>
         <p class="ub-cap">Agrupados por trimestre previsto de devolución.</p>
         <div class="ub-scroll">
-          <table class="ub-table" data-source="inversiones" data-row-key="id">
+          <table class="ub-table" data-source="inv" data-row-key="titular,id">
             <thead><tr><th data-field="proyecto">Proyecto</th><th data-field="importe_invertido">Invertido</th><th data-field="pendiente_hasta_total_bruto">Importe</th></tr></thead>
             <tbody data-draw="tb-prev"></tbody>
           </table>
@@ -162,7 +164,7 @@ details.ub-foot summary { cursor: pointer; }
         <div class="ub-scroll">
           <table class="ub-table">
             <thead><tr><th>Fecha</th><th>Proyecto</th><th>Importe</th></tr></thead>
-            <tbody data-draw="tb-cob" data-source="pagos"></tbody>
+            <tbody data-draw="tb-cob" data-source="pag"></tbody>
           </table>
         </div>
       </div>
@@ -206,10 +208,22 @@ details.ub-foot summary { cursor: pointer; }
 })();
 
 // Valores calculados
+dash.calc('inv', {
+  title: 'Inversiones del titular elegido',
+  description: 'Las inversiones del titular seleccionado arriba, o de todos.',
+  inputs: ['inversiones'],
+  fn: (inversiones) => { const t = dash.params().titular || ''; return inversiones.filter((r) => !t || r.titular === t); },
+});
+dash.calc('pag', {
+  title: 'Pagos del titular elegido',
+  description: 'Los pagos del titular seleccionado arriba, o de todos.',
+  inputs: ['pagos'],
+  fn: (pagos) => { const t = dash.params().titular || ''; return pagos.filter((p) => !t || p.titular === t); },
+});
 dash.calc('kpis', {
   title: 'Resumen de la cartera',
   description: 'Totales de los proyectos en curso y de los cobros recibidos.',
-  inputs: ['inversiones', 'pagos'],
+  inputs: ['inv', 'pag'],
   fn: (inversiones, pagos) => {
     const num = (v) => (v === null || v === '' ? 0 : +v);
     const curso = inversiones.filter((r) => r.estado === 'En curso');
@@ -235,7 +249,7 @@ dash.calc('kpis', {
 dash.calc('por_modelo', {
   title: 'Invertido por tipo de proyecto',
   description: 'Proyectos en curso agrupados por préstamo, plusvalía o rentas.',
-  inputs: ['inversiones'],
+  inputs: ['inv'],
   fn: (inversiones) => {
     const curso = inversiones.filter((r) => r.estado === 'En curso');
     return d3.rollups(curso, (g) => ({
@@ -249,7 +263,7 @@ dash.calc('por_modelo', {
 dash.calc('por_trimestre', {
   title: 'Cobros por trimestre',
   description: 'Cobrado según los pagos recibidos; previsto según lo pendiente de cada proyecto en curso en su trimestre de vencimiento.',
-  inputs: ['inversiones', 'pagos'],
+  inputs: ['inv', 'pag'],
   fn: (inversiones, pagos) => {
     const m = new Map();
     const get = (q) => m.get(q) || (m.set(q, { trimestre: q, cobrado: 0, previsto: 0 }), m.get(q));
@@ -262,7 +276,7 @@ dash.calc('por_trimestre', {
 dash.calc('por_anio', {
   title: 'Devoluciones previstas por año',
   description: 'Lo pendiente de los proyectos en curso, sumado por año de vencimiento.',
-  inputs: ['inversiones'],
+  inputs: ['inv'],
   fn: (inversiones) => d3.rollups(
     inversiones.filter((r) => r.estado === 'En curso' && r.vencimiento_trimestre),
     (g) => ({ previsto: d3.sum(g, (r) => +r.pendiente_hasta_total_bruto), proyectos: g.length }),
@@ -273,7 +287,7 @@ dash.calc('por_anio', {
 dash.calc('pivote', {
   title: 'Tabla por trimestres',
   description: 'Una fila por proyecto en curso, con lo pendiente en su trimestre de vencimiento, la ganancia y un impuesto estimado del 19 %.',
-  inputs: ['inversiones'],
+  inputs: ['inv'],
   fn: (inversiones) => {
     const TIPO_IMPUESTO = 0.19;
     return inversiones.filter((r) => r.estado === 'En curso').map((r) => {
@@ -323,6 +337,10 @@ dash.calc('pivote_total', {
   root.querySelectorAll('.ub-tab').forEach((b) => b.addEventListener('click', () => abrir(b.getAttribute('data-tab'))));
   const h = (location.hash || '').slice(1);
   if (h && root.querySelector('[data-panel="' + h + '"]')) abrir(h);
+  root.querySelectorAll('#filtro-titular').forEach((s) => {
+    s.value = (dash.params() || {}).titular || '';
+    s.addEventListener('change', () => dash.setParams({ titular: s.value }));
+  });
   root.querySelectorAll('#filtro-estado, #orden-inv').forEach((s) => s.addEventListener('change', () => dash.draw('tb-inv')));
   root.style.setProperty('--ub-c0', dash.colors[0]);
   root.style.setProperty('--ub-c1', dash.colors[1] || dash.colors[0]);
@@ -455,14 +473,14 @@ dash.calc('pivote_total', {
     if (conNota && r.nota) { const s = document.createElement('span'); s.className = 'ub-note'; s.textContent = r.nota; c.appendChild(s); }
     tr.appendChild(c);
   };
-  const filas = () => { const d = dash.data('inversiones'); return d.status === 'ok' ? d.data : null; };
+  const filas = () => { const d = dash.data('inv'); return d.status === 'ok' ? d.data : null; };
 
   dash.draw('tb-prox', (tb) => {
     const rows = filas(); tb.replaceChildren(); if (!rows) return;
     rows.filter((r) => r.estado === 'En curso' && r.vencimiento_estimado)
       .sort((a, b) => d3.ascending(a.vencimiento_estimado, b.vencimiento_estimado)).slice(0, 6)
       .forEach((r) => {
-        const tr = document.createElement('tr'); tr.setAttribute('data-key', encodeURIComponent(r.id));
+        const tr = document.createElement('tr'); tr.setAttribute('data-key', encodeURIComponent(r.titular) + ',' + encodeURIComponent(r.id));
         nombre(tr, r); td(tr, trim(r.vencimiento_trimestre)); td(tr, eur(n(r.importe_invertido)));
         td(tr, eur(n(r.pendiente_hasta_total_bruto))); td(tr, pct(n(r.rentabilidad_total_pct)));
         tb.appendChild(tr);
@@ -477,8 +495,9 @@ dash.calc('pivote_total', {
     rows.filter((r) => !estado || r.estado === estado)
       .sort((a, b) => (num ? d3.descending(n(a[orden]), n(b[orden])) : d3.ascending(a[orden] || '9999', b[orden] || '9999')))
       .forEach((r) => {
-        const tr = document.createElement('tr'); tr.setAttribute('data-key', encodeURIComponent(r.id));
+        const tr = document.createElement('tr'); tr.setAttribute('data-key', encodeURIComponent(r.titular) + ',' + encodeURIComponent(r.id));
         nombre(tr, r, true);
+        td(tr, ({ fj: 'Yo', padre: 'Padre', madre: 'Madre' })[r.titular] || r.titular, 'ub-l');
         td(tr, r.modelo, 'ub-l'); td(tr, fechaDe(r.fecha_inversion));
         td(tr, eur(n(r.importe_invertido))); td(tr, eur(n(r.cobrado_bruto)));
         td(tr, eur(n(r.total_esperado_bruto))); td(tr, eur(n(r.beneficio_esperado)));
@@ -496,7 +515,7 @@ dash.calc('pivote_total', {
       const c = document.createElement('td'); c.colSpan = 3; c.textContent = trim(q) + ' · ' + eur(d3.sum(g, (r) => n(r.pendiente_hasta_total_bruto)));
       h.appendChild(c); tb.appendChild(h);
       g.sort((a, b) => d3.descending(n(a.pendiente_hasta_total_bruto), n(b.pendiente_hasta_total_bruto))).forEach((r) => {
-        const tr = document.createElement('tr'); tr.setAttribute('data-key', encodeURIComponent(r.id));
+        const tr = document.createElement('tr'); tr.setAttribute('data-key', encodeURIComponent(r.titular) + ',' + encodeURIComponent(r.id));
         nombre(tr, r); td(tr, eur(n(r.importe_invertido))); td(tr, eur(n(r.pendiente_hasta_total_bruto)));
         tb.appendChild(tr);
       });
@@ -504,13 +523,13 @@ dash.calc('pivote_total', {
   });
 
   dash.draw('tb-cob', (tb) => {
-    const d = dash.data('pagos'); tb.replaceChildren(); if (d.status !== 'ok') return;
+    const d = dash.data('pag'); tb.replaceChildren(); if (d.status !== 'ok') return;
     d.data.map((p, i) => ({ ...p, _i: i })).filter((p) => p.estado === 'cobrado').sort((a, b) => d3.descending(a.fecha, b.fecha)).forEach((p) => {
       const tr = document.createElement('tr');
       td(tr, fechaDe(p.fecha));
       const c = td(tr, p.proyecto, 'ub-l'); c.style.whiteSpace = 'normal';
       const v = td(tr, eur2(n(p.importe_bruto)));
-      v.setAttribute('data-source', 'pagos'); v.setAttribute('data-field', 'importe_bruto'); v.setAttribute('data-row', String(p._i));
+      v.setAttribute('data-source', 'pag'); v.setAttribute('data-field', 'importe_bruto'); v.setAttribute('data-row', String(p._i));
       tb.appendChild(tr);
     });
   });
@@ -522,9 +541,9 @@ dash.calc('pivote_total', {
     const rows = d.data, tot = t.data[0];
     const quarters = [...new Set(rows.flatMap((r) => Object.keys(r).filter((k) => /^\d{4}-Q\d$/.test(k))))].sort();
     const years = d3.groups(quarters, (q) => q.slice(0, 4));
-    const TIT = { fj: 'Yo' };
+    const TIT = { fj: 'Yo', padre: 'Padre', madre: 'Madre' };
     const mk = (tag, text, cls, attrs) => { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; Object.entries(attrs || {}).forEach(([a, v]) => e.setAttribute(a, v)); return e; };
-    table.setAttribute('data-row-key', 'id');
+    table.setAttribute('data-row-key', 'titular,id');
     const thead = mk('thead'), r1 = mk('tr'), r2 = mk('tr');
     const fixed = [['titular', 'Titular', 'ub-l'], ['proyecto', 'Proyecto', 'ub-l ub-sticky'], ['modelo', 'Tipo', 'ub-l'], ['tir', 'TIR anual*'], ['rentabilidad', 'Total %'], ['meses', 'Meses'], ['invertido', 'Invertido']];
     fixed.forEach(([f, l, c]) => { r1.appendChild(mk('th', '', c)); r2.appendChild(mk('th', l, c, { 'data-field': f, 'data-source': 'pivote' })); });
@@ -536,7 +555,7 @@ dash.calc('pivote_total', {
     thead.append(r1, r2); table.appendChild(thead);
     const tb = mk('tbody');
     rows.forEach((r) => {
-      const tr = mk('tr', undefined, '', { 'data-key': encodeURIComponent(r.id) });
+      const tr = mk('tr', undefined, '', { 'data-key': encodeURIComponent(r.titular) + ',' + encodeURIComponent(r.id) });
       tr.appendChild(mk('td', TIT[r.titular] || r.titular, 'ub-l'));
       tr.appendChild(mk('td', r.proyecto, 'ub-l ub-sticky ub-name'));
       tr.appendChild(mk('td', r.modelo, 'ub-l'));

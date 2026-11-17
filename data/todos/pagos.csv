@@ -1,0 +1,72 @@
+titular,proyecto,id,estado,fecha,trimestre,fecha_estimada,importe_bruto
+fj,Valencia | Proyecto Montesano,P000285,cobrado,2024-10-02,2024-Q4,2024-10-02,4303.33
+fj,Marbella | Proyecto Guadalmina Alta,P000307,cobrado,2024-10-03,2024-Q4,2024-10-03,2500
+fj,Madrid Centro | Proyecto Local Prime,P000255,cobrado,2025-01-03,2025-Q1,2025-01-03,3265.37
+fj,Madrid | Proyecto López de Hoyos,P000318,cobrado,2025-03-19,2025-Q1,2025-03-19,1225.46
+fj,Lisboa | Proyecto Overseas Residencias,P000350,cobrado,2025-03-31,2025-Q1,2025-03-31,5000
+fj,Málaga | Residencial Santa Inés,P000278,cobrado,2025-07-08,2025-Q3,2025-07-08,1156
+fj,Málaga | Las Lagunas de Mijas,P000271,cobrado,2025-08-20,2025-Q3,2025-08-20,4555.33
+fj,Marbella | Proyecto Villa Generalife,P000264,cobrado,2025-09-24,2025-Q3,2025-09-24,787.5
+fj,Madrid Centro | Proyecto Local Prime,P000255,cobrado,2025-12-31,2025-Q4,2025-12-31,151.71
+fj,Las Palmas | Hotel Roca Negra,P000354,cobrado,2026-05-06,2026-Q2,2026-05-06,3484.17
+fj,Marbella | Proyecto Villa Generalife,P000264,cobrado,2026-06-30,2026-Q2,2026-06-30,563.73
+fj,Ibiza | Proyecto Vista Alegre,P000273,cobrado,2026-06-30,2026-Q2,2026-06-30,571.43
+fj,Marbella | Proyecto Villa Alcalá,P000261,cobrado,2026-09-04,2026-Q3,2026-09-04,352.25
+fj,Ibiza | Proyecto Vista Alegre,P000273,cobrado,2026-10-15,2026-Q4,2026-10-15,414.29
+fj,Alicante | Proyecto Allonbay Azure,P000259,cobrado,2026-10-22,2026-Q4,2026-10-22,2250
+fj,Marbella | Proyecto Villa Alcalá,P000261,cobrado,2026-11-05,2026-Q4,2026-11-05,343.75
+fj,Madrid | Proyecto Alcotán Zabala,P000270,cobrado,2026-11-11,2026-Q4,2026-11-11,2133.33
+fj,Cádiz | Proyecto Playa de las Piletas,P000266,cobrado,2026-11-12,2026-Q4,2026-11-12,3842.32
+fj,Alicante | Proyecto Allonbay Azure,P000259,previsto,,2026-Q4,2026-11-15,270
+fj,Oporto | Proyecto Barao Forrester,P000272,previsto,,2026-Q4,2026-11-15,8637.6
+fj,Marbella | Proyecto Villa Alcalá,P000261,previsto,,2026-Q4,2026-11-15,230
+fj,Madrid | Proyecto El Olivo,P000282,previsto,,2026-Q4,2026-11-15,5500
+fj,Ibiza | Proyecto Vista Alegre,P000273,previsto,,2027-Q1,2027-02-15,2798.5
+fj,Málaga | Proyecto Oceánika,P000292,previsto,,2027-Q1,2027-02-15,4380
+fj,Málaga | Proyecto Villa Orquídea,P000344,previsto,,2027-Q1,2027-02-15,5625
+fj,Marbella | Proyecto Villa Generalife,P000264,previsto,,2027-Q2,2027-05-15,12110
+fj,Cádiz | Proyecto Playa de las Piletas,P000266,previsto,,2027-Q3,2027-08-15,22400
+fj,Oporto | Proyecto Oasis,P000274,previsto,,2027-Q3,2027-08-15,7426.05
+fj,Huelva | Proyecto La Antilla,P000291,previsto,,2027-Q4,2027-11-15,5194
+fj,Marbella | Proyecto Elviria Homes,P000301,previsto,,2027-Q4,2027-11-15,11505
+fj,Málaga I Proyecto El Higuerón TB51,P000361,previsto,,2028-Q2,2028-05-15,27621
+fj,Madrid | Proyecto Oficinas Mazarredo II,P000463,previsto,,2028-Q2,2028-05-15,7180
+fj,Málaga | Proyecto Polarsol,P000478,previsto,,2028-Q2,2028-05-15,4250
+fj,Madrid | Proyecto Alcotán Zabala,P000270,previsto,,2028-Q3,2028-08-15,8814
+fj,Málaga | Proyecto El Higuerón TB65,P000367,previsto,,2028-Q3,2028-08-15,22360
+fj,Málaga | Proyecto Manilva,P000296,previsto,,2028-Q4,2028-11-15,8300
+fj,Madrid | Proyecto López de Hoyos,P000318,previsto,,2028-Q4,2028-11-15,9743.65
+fj,Málaga | Proyecto Celestia Homes,P000355,previsto,,2028-Q4,2028-11-15,4149
+fj,Málaga | Proyecto Las Mesas,P000386,previsto,,2028-Q4,2028-11-15,1680
+fj,Móstoles | Proyecto América,P000295,previsto,,2029-Q1,2029-02-15,15250
+fj,Málaga | Proyecto Kala,P000389,previsto,,2029-Q1,2029-02-15,14760
+fj,Málaga | Proyecto Moon 64,P000396,previsto,,2029-Q1,2029-02-15,20352.5
+fj,Alicante I Proyecto Essence,P000447,previsto,,2029-Q1,2029-02-15,12271
+fj,Oporto | Proyecto Francos,P000364,previsto,,2029-Q3,2029-08-15,8685
+padre,Madrid | Proyecto López de Hoyos,P000318,cobrado,2025-03-19,2025-Q1,2025-03-19,721.92
+padre,Málaga | Proyecto Bulevar 360,P000309,cobrado,2026-02-26,2026-Q1,2026-02-26,4801.51
+padre,Málaga | Proyecto Bulevar 360 II,P000313,cobrado,2026-02-26,2026-Q1,2026-02-26,5988.63
+padre,Madrid | Proyecto Alcalá 552,P000431,cobrado,2026-04-01,2026-Q2,2026-04-01,146.32
+padre,Madrid | Proyecto Alcalá 552,P000431,cobrado,2026-04-15,2026-Q2,2026-04-15,168.57
+padre,Madrid | Proyecto Alcalá 552,P000431,cobrado,2026-07-01,2026-Q3,2026-07-01,260
+padre,Paris | Proyecto Marjolin,P000321,cobrado,2026-08-11,2026-Q3,2026-08-11,10640.48
+padre,Marbella | Proyecto Salvia II,P000312,cobrado,2026-09-03,2026-Q3,2026-09-03,475.66
+padre,Marbella | Proyecto Salvia II - Tramo II,P000317,cobrado,2026-09-03,2026-Q3,2026-09-03,237.83
+padre,Marseillan | Port Marseillan,P000466,cobrado,2026-09-30,2026-Q3,2026-09-30,2000.9
+padre,Madrid | Proyecto Alcalá 552,P000431,cobrado,2026-10-05,2026-Q4,2026-10-05,260
+padre,Marseillan | Port Marseillan,P000466,cobrado,2026-11-11,2026-Q4,2026-11-11,227.93
+padre,Madrid | Proyecto Alcalá 552,P000431,previsto,,2026-Q4,2026-11-15,260
+padre,Burgos | Proyecto Torre Zenit,P000279,previsto,,2027-Q2,2027-05-15,6115.5
+padre,Marbella | Proyecto Salvia II,P000312,previsto,,2027-Q3,2027-08-15,6850
+padre,Marbella | Proyecto Salvia II - Tramo II,P000317,previsto,,2027-Q3,2027-08-15,3425
+padre,Marbella | Proyecto Elviria Homes,P000301,previsto,,2027-Q4,2027-11-15,4602
+padre,Barcelona | Proyecto Residencial Priorat,P000319,previsto,,2027-Q4,2027-11-15,7330
+padre,Málaga I Proyecto El Higuerón TB51,P000361,previsto,,2028-Q2,2028-05-15,1116
+padre,Madrid | Proyecto Residencia Marte,P000391,previsto,,2028-Q2,2028-05-15,11088
+padre,Marseillan | Port Marseillan,P000466,previsto,,2028-Q3,2028-08-15,6930
+padre,Madrid | Proyecto López de Hoyos,P000318,previsto,,2028-Q4,2028-11-15,5740
+padre,Málaga | Proyecto Las Mesas,P000386,previsto,,2028-Q4,2028-11-15,7500
+padre,Sevilla | Proyecto Jardines del Ayra II,P000441,previsto,,2029-Q1,2029-02-15,7357.7
+padre,Barcelona | Proyecto Gavá Mar,P000372,previsto,,2029-Q2,2029-05-15,11739
+padre,Barcelona | Proyecto Gavá Mar II,P000374,previsto,,2029-Q2,2029-05-15,8390
+padre,Asturias | Proyecto Residencial Contrueces,P000451,previsto,,2029-Q4,2029-11-15,17660

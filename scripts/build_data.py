@@ -9,7 +9,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 MODELO = {"LENDING": "Préstamo", "SOLD": "Plusvalía", "RENT": "Rentas"}
-FASE = {"FORMALIZED": "En curso", "CLOSED": "Cerrado", "CANCELED": "Cancelado"}
+FASE = {"FORMALIZED": "En curso", "FUNDED": "En curso", "CLOSED": "Cerrado", "CANCELED": "Cancelado"}
+# Préstamos en los que el calendario de Urbanitae solo muestra el próximo cupón y no la
+# devolución del capital: vencimiento estimado a partir del plazo de la ficha del proyecto.
+VENC_MANUAL = {
+    "P000431": ("2027-Q4", "Préstamo a 24 meses desde el 11/12/2025: el capital se devolvería hacia el 4T 2027. El calendario solo muestra los cupones trimestrales."),
+    "P000261": ("2026-Q4", "Plazo de 24 meses ya cumplido (feb. 2026); sigue pagando intereses y Urbanitae no da fecha de devolución del capital."),
+}
 Q_MID = {"Q1": (2, 15), "Q2": (5, 15), "Q3": (8, 15), "Q4": (11, 15)}
 
 
@@ -67,6 +73,11 @@ def build(titular):
         prev = [p for p in mis if p["estado"] == "previsto"]
         venc = max((p["fecha_estimada"] for p in prev), default="")
         venc_q = max((p["trimestre"] for p in prev), default="")
+        manual = VENC_MANUAL.get(pid) if r["fase"] not in ("CLOSED", "CANCELED") else None
+        if manual:
+            venc_q = manual[0]
+            y, q = venc_q.split("-")
+            venc = date(int(y), *Q_MID[q]).isoformat()
         if r["fase"] in ("CLOSED", "CANCELED"):
             devuelto = num(r["devuelto"]) or cobrado
             total_esperado = devuelto
@@ -82,7 +93,9 @@ def build(titular):
         if r["fase"] not in ("CLOSED", "CANCELED"):
             if falta > 0 and venc:
                 flows.append((date.fromisoformat(venc[:10]), falta))
-            if abs(falta - pendiente) > 1:
+            if manual:
+                nota = manual[1]
+            elif abs(falta - pendiente) > max(50, 0.02 * total_esperado):
                 nota = (f"El calendario muestra {pendiente:.2f} € pendientes; para llegar al total "
                         f"esperado faltan {falta:.2f} €")
         ultimo = max((p["fecha_estimada"][:10] for p in mis), default="")
@@ -97,7 +110,7 @@ def build(titular):
             "fecha_financiado": r["fecha_financiado"],
             "importe_invertido": imp, "capital_activo": activo,
             "cobrado_bruto": cobrado, "pendiente_calendario_bruto": pendiente,
-            "pendiente_hasta_total_bruto": max(falta, 0) if r["fase"] == "FORMALIZED" else 0,
+            "pendiente_hasta_total_bruto": max(falta, 0) if FASE.get(r["fase"]) == "En curso" else 0,
             "total_esperado_bruto": total_esperado,
             "beneficio_esperado": round(total_esperado - imp, 2),
             "rentabilidad_total_pct": round((total_esperado / imp - 1) * 100, 2),

@@ -1,0 +1,28 @@
+titular,proyecto,id,estado,fecha,trimestre,fecha_estimada,importe_bruto
+padre,Madrid | Proyecto López de Hoyos,P000318,cobrado,2025-03-19,2025-Q1,2025-03-19,721.92
+padre,Málaga | Proyecto Bulevar 360,P000309,cobrado,2026-02-26,2026-Q1,2026-02-26,4801.51
+padre,Málaga | Proyecto Bulevar 360 II,P000313,cobrado,2026-02-26,2026-Q1,2026-02-26,5988.63
+padre,Madrid | Proyecto Alcalá 552,P000431,cobrado,2026-04-01,2026-Q2,2026-04-01,146.32
+padre,Madrid | Proyecto Alcalá 552,P000431,cobrado,2026-04-15,2026-Q2,2026-04-15,168.57
+padre,Madrid | Proyecto Alcalá 552,P000431,cobrado,2026-07-01,2026-Q3,2026-07-01,260
+padre,Paris | Proyecto Marjolin,P000321,cobrado,2026-08-11,2026-Q3,2026-08-11,10640.48
+padre,Marbella | Proyecto Salvia II,P000312,cobrado,2026-09-03,2026-Q3,2026-09-03,475.66
+padre,Marbella | Proyecto Salvia II - Tramo II,P000317,cobrado,2026-09-03,2026-Q3,2026-09-03,237.83
+padre,Marseillan | Port Marseillan,P000466,cobrado,2026-09-30,2026-Q3,2026-09-30,2000.9
+padre,Madrid | Proyecto Alcalá 552,P000431,cobrado,2026-10-05,2026-Q4,2026-10-05,260
+padre,Marseillan | Port Marseillan,P000466,cobrado,2026-11-11,2026-Q4,2026-11-11,227.93
+padre,Madrid | Proyecto Alcalá 552,P000431,previsto,,2026-Q4,2026-11-15,260
+padre,Burgos | Proyecto Torre Zenit,P000279,previsto,,2027-Q2,2027-05-15,6115.5
+padre,Marbella | Proyecto Salvia II,P000312,previsto,,2027-Q3,2027-08-15,6850
+padre,Marbella | Proyecto Salvia II - Tramo II,P000317,previsto,,2027-Q3,2027-08-15,3425
+padre,Marbella | Proyecto Elviria Homes,P000301,previsto,,2027-Q4,2027-11-15,4602
+padre,Barcelona | Proyecto Residencial Priorat,P000319,previsto,,2027-Q4,2027-11-15,7330
+padre,Málaga I Proyecto El Higuerón TB51,P000361,previsto,,2028-Q2,2028-05-15,1116
+padre,Madrid | Proyecto Residencia Marte,P000391,previsto,,2028-Q2,2028-05-15,11088
+padre,Marseillan | Port Marseillan,P000466,previsto,,2028-Q3,2028-08-15,6930
+padre,Madrid | Proyecto López de Hoyos,P000318,previsto,,2028-Q4,2028-11-15,5740
+padre,Málaga | Proyecto Las Mesas,P000386,previsto,,2028-Q4,2028-11-15,7500
+padre,Sevilla | Proyecto Jardines del Ayra II,P000441,previsto,,2029-Q1,2029-02-15,7357.7
+padre,Barcelona | Proyecto Gavá Mar,P000372,previsto,,2029-Q2,2029-05-15,11739
+padre,Barcelona | Proyecto Gavá Mar II,P000374,previsto,,2029-Q2,2029-05-15,8390
+padre,Asturias | Proyecto Residencial Contrueces,P000451,previsto,,2029-Q4,2029-11-15,17660

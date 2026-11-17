@@ -1,0 +1,22 @@
+{
+  "invertido_total": 96740,
+  "invertido_activo": 87690,
+  "invertido_cerrado": 9050,
+  "prestamo": 22550,
+  "plusvalia": 74190,
+  "rentas": 0,
+  "tir_estimada_abiertos_pond": 15.23,
+  "tir_actualizada_abiertos_pond": 12.91,
+  "rent_estimada_abiertos_pond": 51.28,
+  "rent_actualizada_abiertos_pond": 44.05,
+  "tir_estimada_cerrados_pond": 13,
+  "tir_obtenida_cerrados_pond": 12.75,
+  "rent_estimada_cerrados_pond": 12.39,
+  "rent_obtenida_cerrados_pond": 19.23,
+  "titular": "padre",
+  "n_inversiones": 18,
+  "n_en_curso": 16,
+  "capital_activo": 74836.73,
+  "cobrado_bruto": 25929.75,
+  "pendiente_bruto": 106103.2
+}

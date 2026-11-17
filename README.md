@@ -18,7 +18,8 @@ Datos económicos de las inversiones en Urbanitae (crowdfunding), extraídos del
 
 | Código | Titular | Última extracción |
 |---|---|---|
-| `fj` | Francisco Javier | 2026-11-17 |
+| `fj` | Yo | 2026-11-17 |
+| `padre` | Padre | 2026-11-17 |
 
 ## Ficheros
 
@@ -39,7 +40,7 @@ Datos económicos de las inversiones en Urbanitae (crowdfunding), extraídos del
 ## Actualizar
 
 1. Extraer de nuevo los datos de la web y sustituir los ficheros de `data/raw/`.
-2. Ejecutar `python3 scripts/build_data.py fj`.
+2. Ejecutar `python3 scripts/build_data.py fj padre`.
 3. Ejecutar `python3 scripts/encrypt_data.py` (pide la contraseña) para regenerar `data.enc.json`.
 
 ## Panel en Claude
