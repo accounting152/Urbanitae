@@ -28,3 +28,9 @@ Datos económicos de las inversiones en Urbanitae (crowdfunding), extraídos del
 
 1. Extraer de nuevo los datos de la web y sustituir los ficheros de `data/raw/`.
 2. Ejecutar `python3 scripts/build_data.py fj`.
+
+## Panel
+
+Panel con cuatro informes (Resumen, Inversiones, Calendario de pagos y Tabla por trimestres): https://claude.ai/artifact/RpgGPVLR2bEVossdeihYT2
+
+El código de la página está en `dashboard/index.html`. Lee `data/<titular>/inversiones.csv` y `data/<titular>/pagos.csv`.

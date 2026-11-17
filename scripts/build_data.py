@@ -17,6 +17,13 @@ def num(v):
     return float(v) if v not in ("", None) else None
 
 
+def meses(d0, d1):
+    if not d0 or not d1:
+        return None
+    a, b = date.fromisoformat(d0[:10]), date.fromisoformat(d1[:10])
+    return round((b - a).days / 30.44)
+
+
 def xirr(flows):
     """flows: [(date, amount)] — TIR anual por bisección."""
     if not flows or all(a <= 0 for _, a in flows) or all(a >= 0 for _, a in flows):
@@ -98,6 +105,7 @@ def build(titular):
             "tir_objetivo_pct": num(r["target_irr"]), "tir_real_pct": num(r["actual_irr"]),
             "plazo_objetivo_meses": num(r["plazo_obj_meses"]), "plazo_real_meses": num(r["plazo_real_meses"]),
             "vencimiento_trimestre": venc_q, "vencimiento_estimado": venc[:10],
+            "meses_hasta_vencimiento": meses(r["fecha_inversion"], venc[:10] or ultimo),
             "ultimo_pago": ultimo, "participacion_pct": num(r["participacion_pct"]),
             "nota": nota,
         })

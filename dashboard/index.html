@@ -1,0 +1,561 @@
+<meta name="dash-one-writer">
+<style>
+.ub { font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+.ub-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 var(--cds-gap-xs); }
+.ub-lede { color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-lg); max-width: 60rem; }
+.ub-lede b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+.ub-tabs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); border-bottom: 1px solid var(--color-border-line); margin-bottom: var(--cds-gap-lg); }
+.ub-tab { appearance: none; background: none; border: 0; border-bottom: 2px solid transparent; padding: var(--cds-pad-sm) var(--cds-pad-md); font: inherit; color: var(--color-fg-muted); cursor: pointer; }
+.ub-tab.is-on { color: var(--color-fg); border-bottom-color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+.ub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: var(--cds-gap-md); margin-bottom: var(--cds-gap-lg); }
+.ub-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; }
+.ub-kpi-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.ub-kpi { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; margin-top: var(--cds-gap-xs); }
+.ub-kpi-sub { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-gap-xs); }
+.ub-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: var(--cds-gap-md); margin-bottom: var(--cds-gap-lg); }
+.ub-h { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-xs); }
+.ub-cap { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-md); }
+.ub-chart { position: relative; min-height: 240px; }
+.ub-chart svg text { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); }
+.ub-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; z-index: 2; }
+.ub-tip span { color: var(--cds-text-secondary); }
+.ub-legend { display: flex; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-bottom: var(--cds-gap-sm); }
+.ub-sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.ub-scroll { overflow-x: auto; }
+.ub-table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-body); font-variant-numeric: tabular-nums; }
+.ub-table th, .ub-table td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); text-align: right; white-space: nowrap; }
+.ub-table th { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); }
+.ub-table th:first-child, .ub-table td:first-child, .ub-table .ub-l { text-align: left; }
+.ub-table td.ub-name { white-space: normal; min-width: 14rem; }
+.ub-table a { color: inherit; text-decoration: none; }
+.ub-table a:hover { text-decoration: underline; }
+.ub-note { display: block; font-size: var(--cds-font-size-caption); color: var(--color-warn); margin-top: 2px; }
+.ub-pill { display: inline-block; font-size: var(--cds-font-size-caption); padding: 0 var(--cds-pad-sm); border-radius: 999px; border: 1px solid var(--color-border-line); color: var(--color-fg-muted); }
+.ub-ok { color: var(--color-ok); }
+.ub-muted { color: var(--color-fg-muted); }
+.ub-bar { display: flex; gap: var(--cds-gap-sm); align-items: center; flex-wrap: wrap; margin-bottom: var(--cds-gap-md); }
+.ub-pivot th, .ub-pivot td { padding: 4px 8px; }
+.ub-pivot thead th { background: var(--color-panel); }
+.ub-pivot .ub-y { text-align: center; border-left: 1px solid var(--color-border-line); }
+.ub-pivot .ub-q0 { border-left: 1px solid var(--color-border-line); }
+.ub-pivot .ub-sticky { position: sticky; left: 0; background: var(--color-bg); z-index: 1; }
+.ub-pivot thead .ub-sticky { background: var(--color-panel); }
+.ub-pivot tfoot td { font-weight: var(--cds-font-weight-medium); border-top: 2px solid var(--color-fg-muted); }
+.ub-pivot .ub-strong { font-weight: var(--cds-font-weight-medium); }
+.ub-neg { color: var(--color-bad); }
+.ub-group td { background: var(--color-panel); font-weight: var(--cds-font-weight-medium); text-align: left; }
+details.ub-foot { margin-top: var(--cds-gap-lg); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+details.ub-foot summary { cursor: pointer; }
+</style>
+
+<div class="ub">
+  <h1 class="ub-title" id="titulo">Mis inversiones en Urbanitae</h1>
+  <p class="ub-lede" id="resumen-frase">Tienes <b data-draw="t-inv" data-source="kpis" data-row="0" data-field="invertido_en_curso">—</b> invertidos en <b data-draw="t-n" data-source="kpis" data-row="0" data-field="n_en_curso">—</b> proyectos en curso. Urbanitae prevé devolverte <b data-draw="t-tot" data-source="kpis" data-row="0" data-field="total_esperado">—</b>, un beneficio de <b data-draw="t-ben" data-source="kpis" data-row="0" data-field="beneficio_esperado">—</b> (<b data-draw="t-rent" data-source="kpis" data-row="0" data-field="rentabilidad_pct">—</b>). El próximo vencimiento previsto es <b data-draw="t-prox" data-source="kpis" data-row="0" data-field="proximo_proyecto">—</b> en <b data-draw="t-proxq" data-source="kpis" data-row="0" data-field="proximo_trimestre">—</b>.</p>
+
+  <div class="ub-tabs" role="tablist" id="pestanas">
+    <button class="ub-tab is-on" role="tab" aria-selected="true" data-tab="resumen">Resumen</button>
+    <button class="ub-tab" role="tab" aria-selected="false" data-tab="inversiones">Inversiones</button>
+    <button class="ub-tab" role="tab" aria-selected="false" data-tab="calendario">Calendario de pagos</button>
+    <button class="ub-tab" role="tab" aria-selected="false" data-tab="tabla">Tabla por trimestres</button>
+  </div>
+
+  <!-- RESUMEN -->
+  <section id="resumen" data-panel="resumen">
+    <div class="ub-grid">
+      <div class="ub-card" id="kpi-invertido"><div class="ub-kpi-label">Invertido en proyectos en curso</div><div class="ub-kpi" data-draw="k-inv" data-source="kpis" data-row="0" data-field="invertido_en_curso">—</div><div class="ub-kpi-sub">Total histórico <span data-draw="k-invh" data-source="kpis" data-row="0" data-field="invertido_total">—</span></div></div>
+      <div class="ub-card" id="kpi-activo"><div class="ub-kpi-label">Capital activo</div><div class="ub-kpi" data-draw="k-act" data-source="kpis" data-row="0" data-field="capital_activo">—</div><div class="ub-kpi-sub">Capital aún no devuelto</div></div>
+      <div class="ub-card" id="kpi-cobrado"><div class="ub-kpi-label">Cobrado hasta hoy</div><div class="ub-kpi" data-draw="k-cob" data-source="kpis" data-row="0" data-field="cobrado">—</div><div class="ub-kpi-sub">Capital e intereses, en bruto</div></div>
+      <div class="ub-card" id="kpi-pendiente"><div class="ub-kpi-label">Pendiente de cobrar</div><div class="ub-kpi" data-draw="k-pen" data-source="kpis" data-row="0" data-field="pendiente">—</div><div class="ub-kpi-sub">Previsto por Urbanitae, en bruto</div></div>
+      <div class="ub-card" id="kpi-beneficio"><div class="ub-kpi-label">Beneficio esperado</div><div class="ub-kpi" data-draw="k-ben" data-source="kpis" data-row="0" data-field="beneficio_esperado">—</div><div class="ub-kpi-sub">Proyectos en curso, antes de impuestos</div></div>
+      <div class="ub-card" id="kpi-rentabilidad"><div class="ub-kpi-label">Rentabilidad total esperada</div><div class="ub-kpi" data-draw="k-rent" data-source="kpis" data-row="0" data-field="rentabilidad_pct">—</div><div class="ub-kpi-sub">Ponderada por importe invertido</div></div>
+    </div>
+
+    <div class="ub-two">
+      <div class="ub-card" id="grafico-anual">
+        <h2 class="ub-h">Devoluciones previstas por año</h2>
+        <p class="ub-cap">Lo que falta por cobrar de los proyectos en curso, según el año de vencimiento previsto.</p>
+        <div class="ub-chart" data-draw="ch-anio" data-source="por_anio" role="img" aria-label="Devoluciones previstas por año"></div>
+      </div>
+      <div class="ub-card" id="grafico-tipo">
+        <h2 class="ub-h">Capital invertido por tipo</h2>
+        <p class="ub-cap">Proyectos en curso: importe invertido y beneficio esperado.</p>
+        <div class="ub-legend"><span><i class="ub-sw" style="background: var(--cds-chart-muted)"></i>Invertido</span><span><i class="ub-sw" style="background: var(--ub-c0)"></i>Beneficio esperado</span></div>
+        <div class="ub-chart" data-draw="ch-tipo" data-source="por_modelo" role="img" aria-label="Capital invertido y beneficio por tipo de proyecto" style="min-height: 140px"></div>
+      </div>
+    </div>
+
+    <div class="ub-card" id="proximos">
+      <h2 class="ub-h">Próximos vencimientos</h2>
+      <p class="ub-cap">Los seis proyectos en curso con devolución prevista más cercana.</p>
+      <div class="ub-scroll">
+        <table class="ub-table" data-source="inversiones" data-row-key="id">
+          <thead><tr><th data-field="proyecto">Proyecto</th><th data-field="vencimiento_trimestre">Vence</th><th data-field="importe_invertido">Invertido</th><th data-field="pendiente_hasta_total_bruto">Por cobrar</th><th data-field="rentabilidad_total_pct">Rentab.</th></tr></thead>
+          <tbody data-draw="tb-prox"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVERSIONES -->
+  <section id="inversiones" data-panel="inversiones" hidden>
+    <div class="ub-bar">
+      <select class="dash-select" id="filtro-estado" aria-label="Estado">
+        <option value="En curso">En curso</option>
+        <option value="Cerrado">Cerradas</option>
+        <option value="Cancelado">Canceladas</option>
+        <option value="">Todas</option>
+      </select>
+      <select class="dash-select" id="orden-inv" aria-label="Ordenar por">
+        <option value="vencimiento_estimado">Ordenar por vencimiento</option>
+        <option value="fecha_inversion">Ordenar por fecha de inversión</option>
+        <option value="importe_invertido">Ordenar por importe</option>
+        <option value="rentabilidad_total_pct">Ordenar por rentabilidad</option>
+        <option value="tir_calculada_pct">Ordenar por TIR</option>
+      </select>
+    </div>
+    <div class="ub-card" id="tabla-inversiones">
+      <h2 class="ub-h">Detalle por proyecto</h2>
+      <p class="ub-cap">Importes en bruto. «Total esperado» es lo que Urbanitae prevé devolverte en total, incluido el capital.</p>
+      <div class="ub-scroll">
+        <table class="ub-table" data-source="inversiones" data-row-key="id">
+          <thead><tr>
+            <th data-field="proyecto">Proyecto</th>
+            <th data-field="modelo" class="ub-l">Tipo</th>
+            <th data-field="fecha_inversion">Invertido el</th>
+            <th data-field="importe_invertido">Invertido</th>
+            <th data-field="cobrado_bruto">Cobrado</th>
+            <th data-field="total_esperado_bruto">Total esperado</th>
+            <th data-field="beneficio_esperado">Beneficio</th>
+            <th data-field="rentabilidad_total_pct">Rentab. total</th>
+            <th data-field="tir_calculada_pct">TIR anual*</th>
+            <th data-field="vencimiento_trimestre">Vencimiento</th>
+            <th data-field="meses_hasta_vencimiento">Meses</th>
+          </tr></thead>
+          <tbody data-draw="tb-inv"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALENDARIO -->
+  <section id="calendario" data-panel="calendario" hidden>
+    <div class="ub-card" id="grafico-trimestres" style="margin-bottom: var(--cds-gap-lg)">
+      <h2 class="ub-h">Cobros por trimestre</h2>
+      <p class="ub-cap">Cobrado (pagos recibidos) y previsto (lo que falta de cada proyecto en curso, en su trimestre de vencimiento).</p>
+      <div class="ub-legend"><span><i class="ub-sw" style="background: var(--ub-c1)"></i>Cobrado</span><span><i class="ub-sw" style="background: var(--ub-c0)"></i>Previsto</span></div>
+      <div class="ub-chart" data-draw="ch-trim" data-source="por_trimestre" role="img" aria-label="Cobros recibidos y previstos por trimestre" style="min-height: 280px"></div>
+    </div>
+    <div class="ub-two">
+      <div class="ub-card" id="cobros-previstos">
+        <h2 class="ub-h">Próximos cobros</h2>
+        <p class="ub-cap">Agrupados por trimestre previsto de devolución.</p>
+        <div class="ub-scroll">
+          <table class="ub-table" data-source="inversiones" data-row-key="id">
+            <thead><tr><th data-field="proyecto">Proyecto</th><th data-field="importe_invertido">Invertido</th><th data-field="pendiente_hasta_total_bruto">Importe</th></tr></thead>
+            <tbody data-draw="tb-prev"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="ub-card" id="cobros-recibidos">
+        <h2 class="ub-h">Cobros recibidos</h2>
+        <p class="ub-cap">Pagos ya abonados, del más reciente al más antiguo.</p>
+        <div class="ub-scroll">
+          <table class="ub-table">
+            <thead><tr><th>Fecha</th><th>Proyecto</th><th>Importe</th></tr></thead>
+            <tbody data-draw="tb-cob" data-source="pagos"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLA PIVOTE -->
+  <section id="tabla" data-panel="tabla" hidden>
+    <div class="ub-card" id="tabla-trimestres">
+      <h2 class="ub-h">Devolución esperada por trimestre</h2>
+      <p class="ub-cap">Proyectos en curso. Cada importe es lo que falta por cobrar del proyecto, en el trimestre previsto. Impuesto estimado al 19 % sobre la ganancia.</p>
+      <div class="ub-scroll">
+        <table class="ub-table ub-pivot" data-draw="tb-pivot" data-source="pivote pivote_total"></table>
+      </div>
+    </div>
+  </section>
+
+  <details class="ub-foot" id="notas">
+    <summary>Cómo se calculan las cifras</summary>
+    <p>Datos extraídos de tu área privada de Urbanitae (Mis inversiones y Cartera de inversión). Los importes son brutos: Urbanitae retiene el 19 % de los rendimientos al pagar, y en «Movimientos» verás los importes netos.</p>
+    <p>«Total esperado» y la rentabilidad total vienen de la previsión de devolución que Urbanitae publica para cada proyecto. El vencimiento es el trimestre previsto por Urbanitae; para calcular se usa la mitad del trimestre.</p>
+    <p>*La TIR anual es un cálculo aproximado a partir de la fecha de inversión, los cobros y lo pendiente al vencimiento. En los proyectos cerrados, la TIR real que da Urbanitae puede diferir.</p>
+    <p>Algunos proyectos con pagos parciales tienen una nota: el calendario de Urbanitae no reparte todo lo que falta por cobrar, y aquí se suma al trimestre de vencimiento.</p>
+  </details>
+</div>
+
+<script>
+// Utilidades compartidas
+(function () {
+  const L = d3.formatLocale({ decimal: ',', thousands: '.', grouping: [3], currency: ['', ' €'] });
+  const f0 = L.format(',.0f'), f2 = L.format(',.2f'), f1 = L.format(',.1f');
+  const n = (v) => (v === null || v === undefined || v === '' ? null : +v);
+  const eur = (v) => (v === null || isNaN(v) ? '—' : f0(Math.round(v)) + ' €');
+  const eur2 = (v) => (v === null || isNaN(v) ? '—' : f2(v) + ' €');
+  const pct = (v) => (v === null || isNaN(v) ? '—' : f1(v) + ' %');
+  const fecha = d3.utcFormat('%d/%m/%Y');
+  const fechaDe = (s) => (s ? fecha(new Date(s.slice(0, 10) + 'T00:00:00Z')) : '—');
+  const trim = (q) => (q ? q.replace(/^(\d{4})-Q(\d)$/, '$2T $1') : '—');
+  const corto = (s) => (s || '').replace(/\s*[|I]\s*Proyecto\s*/i, ' · ').replace(/\s*\|\s*/, ' · ');
+  window.UB = { n, eur, eur2, pct, fechaDe, trim, corto, f0 };
+})();
+
+// Valores calculados
+dash.calc('kpis', {
+  title: 'Resumen de la cartera',
+  description: 'Totales de los proyectos en curso y de los cobros recibidos.',
+  inputs: ['inversiones', 'pagos'],
+  fn: (inversiones, pagos) => {
+    const num = (v) => (v === null || v === '' ? 0 : +v);
+    const curso = inversiones.filter((r) => r.estado === 'En curso');
+    const inv = d3.sum(curso, (r) => num(r.importe_invertido));
+    const tot = d3.sum(curso, (r) => num(r.total_esperado_bruto));
+    const prox = curso.filter((r) => r.vencimiento_estimado).sort((a, b) => d3.ascending(a.vencimiento_estimado, b.vencimiento_estimado))[0];
+    return [{
+      invertido_en_curso: inv,
+      invertido_total: d3.sum(inversiones, (r) => num(r.importe_invertido)),
+      n_en_curso: curso.length,
+      capital_activo: d3.sum(inversiones, (r) => num(r.capital_activo)),
+      cobrado: d3.sum(pagos.filter((p) => p.estado === 'cobrado'), (p) => num(p.importe_bruto)),
+      pendiente: d3.sum(curso, (r) => num(r.pendiente_hasta_total_bruto)),
+      total_esperado: tot,
+      beneficio_esperado: tot - inv,
+      rentabilidad_pct: inv ? (tot / inv - 1) * 100 : null,
+      proximo_proyecto: prox ? prox.proyecto : null,
+      proximo_trimestre: prox ? prox.vencimiento_trimestre : null,
+    }];
+  },
+});
+
+dash.calc('por_modelo', {
+  title: 'Invertido por tipo de proyecto',
+  description: 'Proyectos en curso agrupados por préstamo, plusvalía o rentas.',
+  inputs: ['inversiones'],
+  fn: (inversiones) => {
+    const curso = inversiones.filter((r) => r.estado === 'En curso');
+    return d3.rollups(curso, (g) => ({
+      invertido: d3.sum(g, (r) => +r.importe_invertido),
+      beneficio: d3.sum(g, (r) => +r.beneficio_esperado),
+      proyectos: g.length,
+    }), (r) => r.modelo).map(([modelo, v]) => ({ modelo, ...v })).sort((a, b) => b.invertido - a.invertido);
+  },
+});
+
+dash.calc('por_trimestre', {
+  title: 'Cobros por trimestre',
+  description: 'Cobrado según los pagos recibidos; previsto según lo pendiente de cada proyecto en curso en su trimestre de vencimiento.',
+  inputs: ['inversiones', 'pagos'],
+  fn: (inversiones, pagos) => {
+    const m = new Map();
+    const get = (q) => m.get(q) || (m.set(q, { trimestre: q, cobrado: 0, previsto: 0 }), m.get(q));
+    pagos.filter((p) => p.estado === 'cobrado').forEach((p) => { get(p.trimestre).cobrado += +p.importe_bruto; });
+    inversiones.filter((r) => r.estado === 'En curso' && r.vencimiento_trimestre).forEach((r) => { get(r.vencimiento_trimestre).previsto += +r.pendiente_hasta_total_bruto; });
+    return [...m.values()].sort((a, b) => d3.ascending(a.trimestre, b.trimestre));
+  },
+});
+
+dash.calc('por_anio', {
+  title: 'Devoluciones previstas por año',
+  description: 'Lo pendiente de los proyectos en curso, sumado por año de vencimiento.',
+  inputs: ['inversiones'],
+  fn: (inversiones) => d3.rollups(
+    inversiones.filter((r) => r.estado === 'En curso' && r.vencimiento_trimestre),
+    (g) => ({ previsto: d3.sum(g, (r) => +r.pendiente_hasta_total_bruto), proyectos: g.length }),
+    (r) => r.vencimiento_trimestre.slice(0, 4)
+  ).map(([anio, v]) => ({ anio, ...v })).sort((a, b) => d3.ascending(a.anio, b.anio)),
+});
+
+dash.calc('pivote', {
+  title: 'Tabla por trimestres',
+  description: 'Una fila por proyecto en curso, con lo pendiente en su trimestre de vencimiento, la ganancia y un impuesto estimado del 19 %.',
+  inputs: ['inversiones'],
+  fn: (inversiones) => {
+    const TIPO_IMPUESTO = 0.19;
+    return inversiones.filter((r) => r.estado === 'En curso').map((r) => {
+      const fila = {
+        id: r.id, titular: r.titular, proyecto: r.proyecto, modelo: r.modelo,
+        tir: r.tir_calculada_pct === null || r.tir_calculada_pct === '' ? null : +r.tir_calculada_pct,
+        rentabilidad: +r.rentabilidad_total_pct, meses: r.meses_hasta_vencimiento === '' ? null : +r.meses_hasta_vencimiento,
+        invertido: +r.importe_invertido, cobrado: +r.cobrado_bruto,
+        total: +r.pendiente_hasta_total_bruto, ganancia: +r.beneficio_esperado,
+      };
+      fila.impuesto = -Math.round(fila.ganancia * TIPO_IMPUESTO * 100) / 100;
+      if (r.vencimiento_trimestre) fila[r.vencimiento_trimestre] = +r.pendiente_hasta_total_bruto;
+      return fila;
+    }).sort((a, b) => d3.ascending(a.proyecto, b.proyecto));
+  },
+});
+
+dash.calc('pivote_total', {
+  title: 'Totales de la tabla por trimestres',
+  description: 'Suma de cada columna de la tabla por trimestres.',
+  inputs: ['pivote'],
+  fn: (pivote) => {
+    const t = {};
+    (pivote || []).forEach((r) => Object.keys(r).forEach((k) => {
+      if (['id', 'titular', 'proyecto', 'modelo', 'tir', 'rentabilidad', 'meses'].includes(k) || r[k] === null) return;
+      t[k] = (t[k] || 0) + r[k];
+    }));
+    t.rentabilidad = t.invertido ? (t.ganancia / t.invertido) * 100 : null;
+    return [t];
+  },
+});
+</script>
+
+<script>
+// Pestañas y controles (solo cambian visibilidad y clases)
+(function () {
+  const root = document.querySelector('.ub') || document;
+  const abrir = (id) => {
+    root.querySelectorAll('[data-panel]').forEach((s) => { s.hidden = s.getAttribute('data-panel') !== id; });
+    root.querySelectorAll('.ub-tab').forEach((b) => {
+      const on = b.getAttribute('data-tab') === id;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    dash.setLink(id);
+  };
+  root.querySelectorAll('.ub-tab').forEach((b) => b.addEventListener('click', () => abrir(b.getAttribute('data-tab'))));
+  const h = (location.hash || '').slice(1);
+  if (h && root.querySelector('[data-panel="' + h + '"]')) abrir(h);
+  root.querySelectorAll('#filtro-estado, #orden-inv').forEach((s) => s.addEventListener('change', () => dash.draw('tb-inv')));
+  root.style.setProperty('--ub-c0', dash.colors[0]);
+  root.style.setProperty('--ub-c1', dash.colors[1] || dash.colors[0]);
+})();
+</script>
+
+<script>
+// Frase y tarjetas
+(function () {
+  const { eur, pct, trim, corto } = window.UB;
+  const k = (name, field, fmt) => dash.draw(name, (el) => {
+    const d = dash.data('kpis');
+    if (d.status !== 'ok' || !d.data || !d.data[0]) { el.textContent = '—'; return; }
+    el.classList.remove('dash-skeleton');
+    el.textContent = fmt(d.data[0][field]);
+  });
+  k('t-inv', 'invertido_en_curso', eur); k('t-n', 'n_en_curso', (v) => String(v));
+  k('t-tot', 'total_esperado', eur); k('t-ben', 'beneficio_esperado', eur);
+  k('t-rent', 'rentabilidad_pct', (v) => '+' + pct(v)); k('t-prox', 'proximo_proyecto', (v) => corto(v) || '—');
+  k('t-proxq', 'proximo_trimestre', trim);
+  k('k-inv', 'invertido_en_curso', eur); k('k-invh', 'invertido_total', eur); k('k-act', 'capital_activo', eur);
+  k('k-cob', 'cobrado', eur); k('k-pen', 'pendiente', eur); k('k-ben', 'beneficio_esperado', eur);
+  k('k-rent', 'rentabilidad_pct', pct);
+})();
+</script>
+
+<script>
+// Gráficos
+(function () {
+  const { eur, trim } = window.UB;
+
+  function tooltip(el) {
+    const t = document.createElement('div');
+    t.className = 'ub-tip'; t.hidden = true; el.appendChild(t);
+    return {
+      show(ev, lines) {
+        t.replaceChildren(...lines.map(([a, b], i) => { const d = document.createElement('div'); if (i === 0) { d.textContent = a; d.style.fontWeight = '500'; } else { const s = document.createElement('span'); s.textContent = a + ': '; d.append(s, b); } return d; }));
+        t.hidden = false;
+        const r = el.getBoundingClientRect();
+        let x = ev.clientX - r.left + 12, y = ev.clientY - r.top - 10;
+        if (x + t.offsetWidth > r.width) x = Math.max(0, ev.clientX - r.left - t.offsetWidth - 12);
+        t.style.left = x + 'px'; t.style.top = Math.max(0, y) + 'px';
+      },
+      hide() { t.hidden = true; },
+    };
+  }
+
+  // Barras verticales apiladas
+  function columnas(el, rows, { x, keys, colors, names, label, height = 240 }) {
+    el.replaceChildren();
+    const W = Math.max(280, el.clientWidth || 600), H = height;
+    const max = d3.max(rows, (r) => d3.sum(keys, (k) => r[k] || 0)) || 1;
+    const y = d3.scaleLinear().domain([0, max]).nice().range([H - 28, 8]);
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', el.getAttribute('aria-label') || '');
+    const gy = svg.append('g').call(d3.axisLeft(y).ticks(5).tickFormat((v) => (v >= 1000 ? window.UB.f0(v / 1000) + ' k' : v)));
+    let ml = 0; gy.selectAll('text').each(function () { ml = Math.max(ml, this.getComputedTextLength()); });
+    ml = Math.ceil(ml) + 14; gy.attr('transform', `translate(${ml},0)`);
+    gy.select('.domain').remove(); gy.selectAll('line').attr('x2', W - ml).style('stroke', 'var(--cds-chart-grid)');
+    const xb = d3.scaleBand().domain(rows.map((r) => r[x])).range([ml, W - 4]).padding(0.25);
+    const gx = svg.append('g').attr('transform', `translate(0,${H - 28})`).call(d3.axisBottom(xb).tickSizeOuter(0).tickFormat(label));
+    gx.select('.domain').style('stroke', 'var(--cds-chart-axis)'); gx.selectAll('line').remove();
+    const step = Math.ceil(rows.length / Math.max(1, Math.floor((W - ml) / 46)));
+    gx.selectAll('.tick').style('display', (d, i) => (i % step === 0 ? null : 'none'));
+    const tip = tooltip(el);
+    const g = svg.append('g');
+    rows.forEach((r) => {
+      let acc = 0;
+      keys.forEach((k, i) => {
+        const v = r[k] || 0; if (!v) return;
+        g.append('rect').attr('x', xb(r[x])).attr('width', xb.bandwidth()).attr('y', y(acc + v)).attr('height', Math.max(1, y(acc) - y(acc + v))).style('fill', colors[i]).attr('rx', 2);
+        acc += v;
+      });
+      if (acc && xb.bandwidth() > 34) svg.append('text').attr('x', xb(r[x]) + xb.bandwidth() / 2).attr('y', y(acc) - 4).attr('text-anchor', 'middle').text(window.UB.f0(Math.round(acc / 1000)) + 'k');
+      g.append('rect').attr('x', xb(r[x]) - xb.step() * xb.paddingInner() / 2).attr('width', xb.step()).attr('y', 0).attr('height', H - 28).style('fill', 'transparent')
+        .on('pointermove', (ev) => tip.show(ev, [[label(r[x])], ...keys.filter((k) => r[k]).map((k, i) => [names[keys.indexOf(k)], eur(r[k])])]))
+        .on('pointerleave', () => tip.hide());
+    });
+  }
+
+  dash.draw('ch-anio', (el) => {
+    const d = dash.data('por_anio');
+    if (d.status !== 'ok' || !d.data) { el.textContent = d.status === 'error' ? 'No se pudieron cargar los datos' : '—'; return; }
+    columnas(el, d.data, { x: 'anio', keys: ['previsto'], colors: [dash.colors[0]], names: ['Previsto'], label: (v) => v });
+  });
+
+  dash.draw('ch-trim', (el) => {
+    const d = dash.data('por_trimestre');
+    if (d.status !== 'ok' || !d.data) { el.textContent = d.status === 'error' ? 'No se pudieron cargar los datos' : '—'; return; }
+    columnas(el, d.data, { x: 'trimestre', keys: ['cobrado', 'previsto'], colors: [dash.colors[1] || dash.colors[0], dash.colors[0]], names: ['Cobrado', 'Previsto'], label: (v) => trim(v).replace(' 20', ' ’'), height: 280 });
+  });
+
+  dash.draw('ch-tipo', (el) => {
+    const d = dash.data('por_modelo');
+    if (d.status !== 'ok' || !d.data) { el.textContent = d.status === 'error' ? 'No se pudieron cargar los datos' : '—'; return; }
+    el.replaceChildren();
+    const rows = d.data, W = Math.max(260, el.clientWidth || 500), rh = 34, H = rows.length * rh + 8;
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const lab = svg.append('g');
+    rows.forEach((r, i) => lab.append('text').attr('x', 0).attr('y', i * rh + rh / 2 + 4).text(r.modelo));
+    let ml = 0; lab.selectAll('text').each(function () { ml = Math.max(ml, this.getComputedTextLength()); }); ml += 10;
+    const tot = (r) => r.invertido + r.beneficio;
+    const endLabels = rows.map((r) => eur(r.invertido) + ' + ' + eur(r.beneficio));
+    const probe = svg.append('text').text(endLabels.reduce((a, b) => (a.length > b.length ? a : b), ''));
+    const mr = probe.node().getComputedTextLength() + 8; probe.remove();
+    const x = d3.scaleLinear().domain([0, d3.max(rows, tot) || 1]).range([ml, Math.max(ml + 40, W - mr)]);
+    const tip = tooltip(el);
+    rows.forEach((r, i) => {
+      const y0 = i * rh + 6, h = rh - 12;
+      svg.append('rect').attr('x', ml).attr('y', y0).attr('height', h).attr('width', x(r.invertido) - ml).style('fill', 'var(--cds-chart-muted)').attr('rx', 2);
+      svg.append('rect').attr('x', x(r.invertido)).attr('y', y0).attr('height', h).attr('width', x(tot(r)) - x(r.invertido)).style('fill', dash.colors[0]).attr('rx', 2);
+      svg.append('text').attr('x', x(tot(r)) + 6).attr('y', y0 + h / 2 + 4).text(endLabels[i]);
+      svg.append('rect').attr('x', 0).attr('y', i * rh).attr('width', W).attr('height', rh).style('fill', 'transparent')
+        .on('pointermove', (ev) => tip.show(ev, [[r.modelo], ['Proyectos', String(r.proyectos)], ['Invertido', eur(r.invertido)], ['Beneficio esperado', eur(r.beneficio)]]))
+        .on('pointerleave', () => tip.hide());
+    });
+  });
+})();
+</script>
+
+<script>
+// Tablas
+(function () {
+  const { n, eur, eur2, pct, fechaDe, trim } = window.UB;
+  const td = (tr, text, cls) => { const c = document.createElement('td'); c.textContent = text; if (cls) c.className = cls; tr.appendChild(c); return c; };
+  const nombre = (tr, r, conNota) => {
+    const c = document.createElement('td'); c.className = 'ub-name';
+    const a = document.createElement('a'); a.textContent = r.proyecto;
+    if (/^https:\/\/urbanitae\.com\//.test(r.url || '')) { a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; }
+    c.appendChild(a);
+    if (conNota && r.nota) { const s = document.createElement('span'); s.className = 'ub-note'; s.textContent = r.nota; c.appendChild(s); }
+    tr.appendChild(c);
+  };
+  const filas = () => { const d = dash.data('inversiones'); return d.status === 'ok' ? d.data : null; };
+
+  dash.draw('tb-prox', (tb) => {
+    const rows = filas(); tb.replaceChildren(); if (!rows) return;
+    rows.filter((r) => r.estado === 'En curso' && r.vencimiento_estimado)
+      .sort((a, b) => d3.ascending(a.vencimiento_estimado, b.vencimiento_estimado)).slice(0, 6)
+      .forEach((r) => {
+        const tr = document.createElement('tr'); tr.setAttribute('data-key', encodeURIComponent(r.id));
+        nombre(tr, r); td(tr, trim(r.vencimiento_trimestre)); td(tr, eur(n(r.importe_invertido)));
+        td(tr, eur(n(r.pendiente_hasta_total_bruto))); td(tr, pct(n(r.rentabilidad_total_pct)));
+        tb.appendChild(tr);
+      });
+  });
+
+  dash.draw('tb-inv', (tb) => {
+    const rows = filas(); tb.replaceChildren(); if (!rows) return;
+    const fs = document.getElementById('filtro-estado'), os = document.getElementById('orden-inv');
+    const estado = fs ? fs.value : 'En curso', orden = os ? os.value : 'vencimiento_estimado';
+    const num = ['importe_invertido', 'rentabilidad_total_pct', 'tir_calculada_pct'].includes(orden);
+    rows.filter((r) => !estado || r.estado === estado)
+      .sort((a, b) => (num ? d3.descending(n(a[orden]), n(b[orden])) : d3.ascending(a[orden] || '9999', b[orden] || '9999')))
+      .forEach((r) => {
+        const tr = document.createElement('tr'); tr.setAttribute('data-key', encodeURIComponent(r.id));
+        nombre(tr, r, true);
+        td(tr, r.modelo, 'ub-l'); td(tr, fechaDe(r.fecha_inversion));
+        td(tr, eur(n(r.importe_invertido))); td(tr, eur(n(r.cobrado_bruto)));
+        td(tr, eur(n(r.total_esperado_bruto))); td(tr, eur(n(r.beneficio_esperado)));
+        td(tr, pct(n(r.rentabilidad_total_pct))); td(tr, pct(n(r.tir_calculada_pct)));
+        td(tr, r.estado === 'En curso' ? trim(r.vencimiento_trimestre) : r.estado); td(tr, r.meses_hasta_vencimiento || '—');
+        tb.appendChild(tr);
+      });
+  });
+
+  dash.draw('tb-prev', (tb) => {
+    const rows = filas(); tb.replaceChildren(); if (!rows) return;
+    const curso = rows.filter((r) => r.estado === 'En curso' && r.vencimiento_trimestre);
+    d3.groups(curso, (r) => r.vencimiento_trimestre).sort((a, b) => d3.ascending(a[0], b[0])).forEach(([q, g]) => {
+      const h = document.createElement('tr'); h.className = 'ub-group';
+      const c = document.createElement('td'); c.colSpan = 3; c.textContent = trim(q) + ' · ' + eur(d3.sum(g, (r) => n(r.pendiente_hasta_total_bruto)));
+      h.appendChild(c); tb.appendChild(h);
+      g.sort((a, b) => d3.descending(n(a.pendiente_hasta_total_bruto), n(b.pendiente_hasta_total_bruto))).forEach((r) => {
+        const tr = document.createElement('tr'); tr.setAttribute('data-key', encodeURIComponent(r.id));
+        nombre(tr, r); td(tr, eur(n(r.importe_invertido))); td(tr, eur(n(r.pendiente_hasta_total_bruto)));
+        tb.appendChild(tr);
+      });
+    });
+  });
+
+  dash.draw('tb-cob', (tb) => {
+    const d = dash.data('pagos'); tb.replaceChildren(); if (d.status !== 'ok') return;
+    d.data.map((p, i) => ({ ...p, _i: i })).filter((p) => p.estado === 'cobrado').sort((a, b) => d3.descending(a.fecha, b.fecha)).forEach((p) => {
+      const tr = document.createElement('tr');
+      td(tr, fechaDe(p.fecha));
+      const c = td(tr, p.proyecto, 'ub-l'); c.style.whiteSpace = 'normal';
+      const v = td(tr, eur2(n(p.importe_bruto)));
+      v.setAttribute('data-source', 'pagos'); v.setAttribute('data-field', 'importe_bruto'); v.setAttribute('data-row', String(p._i));
+      tb.appendChild(tr);
+    });
+  });
+
+  dash.draw('tb-pivot', (table) => {
+    const d = dash.data('pivote'), t = dash.data('pivote_total');
+    table.replaceChildren();
+    if (d.status !== 'ok' || !d.data || t.status !== 'ok' || !t.data) return;
+    const rows = d.data, tot = t.data[0];
+    const quarters = [...new Set(rows.flatMap((r) => Object.keys(r).filter((k) => /^\d{4}-Q\d$/.test(k))))].sort();
+    const years = d3.groups(quarters, (q) => q.slice(0, 4));
+    const TIT = { fj: 'Yo' };
+    const mk = (tag, text, cls, attrs) => { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; Object.entries(attrs || {}).forEach(([a, v]) => e.setAttribute(a, v)); return e; };
+    table.setAttribute('data-row-key', 'id');
+    const thead = mk('thead'), r1 = mk('tr'), r2 = mk('tr');
+    const fixed = [['titular', 'Titular', 'ub-l'], ['proyecto', 'Proyecto', 'ub-l ub-sticky'], ['modelo', 'Tipo', 'ub-l'], ['tir', 'TIR anual*'], ['rentabilidad', 'Total %'], ['meses', 'Meses'], ['invertido', 'Invertido']];
+    fixed.forEach(([f, l, c]) => { r1.appendChild(mk('th', '', c)); r2.appendChild(mk('th', l, c, { 'data-field': f, 'data-source': 'pivote' })); });
+    years.forEach(([y, qs]) => {
+      const th = mk('th', y, 'ub-y'); th.colSpan = qs.length; r1.appendChild(th);
+      qs.forEach((q, i) => r2.appendChild(mk('th', 'T' + q.slice(-1), i === 0 ? 'ub-q0' : '', { 'data-field': q, 'data-source': 'pivote' })));
+    });
+    [['total', 'Total', 'ub-q0'], ['ganancia', 'Ganancia'], ['impuesto', 'Impuesto 19 %']].forEach(([f, l, c]) => { r1.appendChild(mk('th', '', c)); r2.appendChild(mk('th', l, c, { 'data-field': f, 'data-source': 'pivote' })); });
+    thead.append(r1, r2); table.appendChild(thead);
+    const tb = mk('tbody');
+    rows.forEach((r) => {
+      const tr = mk('tr', undefined, '', { 'data-key': encodeURIComponent(r.id) });
+      tr.appendChild(mk('td', TIT[r.titular] || r.titular, 'ub-l'));
+      tr.appendChild(mk('td', r.proyecto, 'ub-l ub-sticky ub-name'));
+      tr.appendChild(mk('td', r.modelo, 'ub-l'));
+      tr.appendChild(mk('td', pct(r.tir))); tr.appendChild(mk('td', pct(r.rentabilidad)));
+      tr.appendChild(mk('td', r.meses === null ? '—' : String(r.meses))); tr.appendChild(mk('td', eur(r.invertido)));
+      quarters.forEach((q) => tr.appendChild(mk('td', r[q] ? eur(r[q]) : '', q.endsWith('Q1') || q === quarters[0] ? 'ub-q0' : '')));
+      tr.appendChild(mk('td', eur(r.total), 'ub-q0 ub-strong')); tr.appendChild(mk('td', eur(r.ganancia)));
+      tr.appendChild(mk('td', eur(r.impuesto), 'ub-neg'));
+      tb.appendChild(tr);
+    });
+    table.appendChild(tb);
+    const tf = mk('tfoot'), fr = mk('tr');
+    const cell = (text, field, cls) => fr.appendChild(mk('td', text, cls, field ? { 'data-source': 'pivote_total', 'data-row': '0', 'data-field': field } : {}));
+    cell('Total', null, 'ub-l'); cell('', null, 'ub-sticky'); cell(''); cell('');
+    cell(pct(tot.rentabilidad), 'rentabilidad'); cell('');
+    cell(eur(tot.invertido), 'invertido');
+    quarters.forEach((q) => cell(tot[q] ? eur(tot[q]) : '', q, q.endsWith('Q1') || q === quarters[0] ? 'ub-q0' : ''));
+    cell(eur(tot.total), 'total', 'ub-q0'); cell(eur(tot.ganancia), 'ganancia'); cell(eur(tot.impuesto), 'impuesto', 'ub-neg');
+    tf.appendChild(fr); table.appendChild(tf);
+  });
+})();
+</script>
