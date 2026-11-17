@@ -1,0 +1,22 @@
+{
+  "invertido_total": 196310,
+  "invertido_activo": 181310,
+  "invertido_cerrado": 15000,
+  "prestamo": 38900,
+  "plusvalia": 154410,
+  "rentas": 3000,
+  "tir_estimada_abiertos_pond": 16.38,
+  "tir_actualizada_abiertos_pond": 15.25,
+  "rent_estimada_abiertos_pond": 55.7,
+  "rent_actualizada_abiertos_pond": 53.91,
+  "tir_estimada_cerrados_pond": 10.93,
+  "tir_obtenida_cerrados_pond": 15.34,
+  "rent_estimada_cerrados_pond": 19.13,
+  "rent_obtenida_cerrados_pond": 12.78,
+  "titular": "fj",
+  "n_inversiones": 33,
+  "n_en_curso": 26,
+  "capital_activo": 170873.17,
+  "cobrado_bruto": 36899.97,
+  "pendiente_bruto": 251492.3
+}
