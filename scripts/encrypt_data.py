@@ -36,7 +36,7 @@ def payload():
     data = {"generado": datetime.now(timezone.utc).isoformat(timespec="minutes"),
             "titulares": {}, "inversiones": [], "pagos": [], "resumen": {}}
     for d in sorted((ROOT / "data").iterdir()):
-        if d.name == "raw" or not (d / "inversiones.csv").exists():
+        if d.name in ("raw", "todos") or not (d / "inversiones.csv").exists():
             continue
         data["titulares"][d.name] = TITULARES.get(d.name, d.name)
         data["inversiones"] += rows(d / "inversiones.csv")
