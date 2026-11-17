@@ -344,18 +344,18 @@ function vResumen(x) {
 function vInversiones(x) {
   const m = $('#main');
   const fe = el('select', { 'aria-label': 'Estado' }, ...[['En curso', 'En curso'], ['Cerrado', 'Cerradas'], ['Cancelado', 'Canceladas'], ['', 'Todas']].map(([v, t]) => el('option', { value: v, text: t })));
-  const fo = el('select', { 'aria-label': 'Ordenar' }, ...[['vencimiento_estimado', 'Por vencimiento'], ['fecha_inversion', 'Por fecha de inversión'], ['importe_invertido', 'Por importe'], ['rentabilidad_total_pct', 'Por rentabilidad'], ['tir_calculada_pct', 'Por TIR']].map(([v, t]) => el('option', { value: v, text: t })));
+  const fo = el('select', { 'aria-label': 'Ordenar' }, ...[['vencimiento_estimado', 'Por vencimiento'], ['fecha_inversion', 'Por fecha de inversión'], ['importe_invertido', 'Por importe'], ['rentabilidad_total_pct', 'Por rentabilidad'], ['tir_anual_pct', 'Por TIR']].map(([v, t]) => el('option', { value: v, text: t })));
   fe.value = state.estado; fo.value = state.orden;
   fe.onchange = () => { state.estado = fe.value; render(); }; fo.onchange = () => { state.orden = fo.value; render(); };
   m.append(el('div', { class: 'bar' }, fe, fo));
-  const numO = ['importe_invertido', 'rentabilidad_total_pct', 'tir_calculada_pct'].includes(state.orden);
+  const numO = ['importe_invertido', 'rentabilidad_total_pct', 'tir_anual_pct'].includes(state.orden);
   const rows = x.inv.filter((r) => !state.estado || r.estado === state.estado).sort(numO ? by((r) => r[state.orden] ?? -1e9, true) : by((r) => r[state.orden] || '9999'));
   const tot = { inv: sum(rows, (r) => r.importe_invertido), cob: sum(rows, (r) => r.cobrado_bruto), te: sum(rows, (r) => r.total_esperado_bruto) };
   m.append(el('p', { class: 'cap' }, `${rows.length} proyectos · invertido `, el('b', { text: eur(tot.inv) }), ' · total esperado ', el('b', { text: eur(tot.te) }), '. Importes en bruto; «Total esperado» incluye el capital.'));
   const tb = el('tbody');
   rows.forEach((r) => tb.append(el('tr', {}, nameCell(r, true), multi() ? el('td', { class: 'l', text: titName(r.titular) }) : null, el('td', { class: 'l', text: r.modelo }), el('td', { text: fdate(r.fecha_inversion) }),
     el('td', { text: eur(r.importe_invertido) }), el('td', { text: eur(r.cobrado_bruto) }), el('td', { text: eur(r.total_esperado_bruto) }), el('td', { text: eur(r.beneficio_esperado) }),
-    el('td', { text: pct(r.rentabilidad_total_pct) }), el('td', { text: pct(r.tir_calculada_pct) }), el('td', { text: r.estado === 'En curso' ? trim(r.vencimiento_trimestre) : r.estado }), el('td', { text: r.meses_hasta_vencimiento ?? '—' }))));
+    el('td', { text: pct(r.rentabilidad_total_pct) }), el('td', { text: pct(r.tir_anual_pct) }), el('td', { text: r.estado === 'En curso' ? trim(r.vencimiento_trimestre) : r.estado }), el('td', { text: r.meses_hasta_vencimiento ?? '—' }))));
   m.append(el('div', { class: 'card wide-only' }, el('div', { class: 'scroll' }, el('table', {},
     el('thead', {}, el('tr', {}, el('th', { class: 'l', text: 'Proyecto' }), multi() ? el('th', { class: 'l', text: 'Titular' }) : null, el('th', { class: 'l', text: 'Tipo' }), el('th', { text: 'Invertido el' }), el('th', { text: 'Invertido' }), el('th', { text: 'Cobrado' }), el('th', { text: 'Total esperado' }), el('th', { text: 'Beneficio' }), el('th', { text: 'Rentab. total' }), el('th', { text: 'TIR anual*' }), el('th', { text: 'Vencimiento' }), el('th', { text: 'Meses' }))), tb))));
   const cards = el('div', { class: 'cards' });
@@ -364,7 +364,7 @@ function vInversiones(x) {
     multi() ? el('span', { class: 'sub', text: titName(r.titular) }) : null,
     r.nota ? el('span', { class: 'note', text: r.nota }) : null,
     el('dl', {}, el('div', {}, el('dt', { text: 'Invertido' }), el('dd', { text: eur(r.importe_invertido) })), el('div', {}, el('dt', { text: 'Total esperado' }), el('dd', { text: eur(r.total_esperado_bruto) })),
-      el('div', {}, el('dt', { text: 'Rentab. total' }), el('dd', { text: pct(r.rentabilidad_total_pct) })), el('div', {}, el('dt', { text: 'TIR anual*' }), el('dd', { text: pct(r.tir_calculada_pct) })),
+      el('div', {}, el('dt', { text: 'Rentab. total' }), el('dd', { text: pct(r.rentabilidad_total_pct) })), el('div', {}, el('dt', { text: 'TIR anual*' }), el('dd', { text: pct(r.tir_anual_pct) })),
       el('div', {}, el('dt', { text: 'Cobrado' }), el('dd', { text: eur(r.cobrado_bruto) })), el('div', {}, el('dt', { text: r.estado === 'En curso' ? 'Vence' : 'Estado' }), el('dd', { text: r.estado === 'En curso' ? trim(r.vencimiento_trimestre) : r.estado }))))));
   m.append(cards);
 }
@@ -402,7 +402,7 @@ function vTabla(x) {
   rows.forEach((r) => {
     const imp = -r.beneficio_esperado * TAX, v = r.pendiente_hasta_total_bruto;
     T.inv += r.importe_invertido; T.tot += v; T.gan += r.beneficio_esperado; T.imp += imp; T.q[r.vencimiento_trimestre] = (T.q[r.vencimiento_trimestre] || 0) + v;
-    const tr = el('tr', {}, el('td', { class: 'stk', text: r.proyecto }), el('td', { class: 'l', text: titName(r.titular) }), el('td', { class: 'l', text: r.modelo }), el('td', { text: pct(r.tir_calculada_pct) }), el('td', { text: pct(r.rentabilidad_total_pct) }), el('td', { text: r.meses_hasta_vencimiento ?? '—' }), el('td', { text: eur(r.importe_invertido) }));
+    const tr = el('tr', {}, el('td', { class: 'stk', text: r.proyecto }), el('td', { class: 'l', text: titName(r.titular) }), el('td', { class: 'l', text: r.modelo }), el('td', { text: pct(r.tir_anual_pct) }), el('td', { text: pct(r.rentabilidad_total_pct) }), el('td', { text: r.meses_hasta_vencimiento ?? '—' }), el('td', { text: eur(r.importe_invertido) }));
     years.forEach(([, qs]) => qs.forEach((q, i) => tr.append(el('td', { class: i === 0 ? 'q0' : '', text: r.vencimiento_trimestre === q ? eur(v) : '' }))));
     tr.append(el('td', { class: 'q0 tot', text: eur(v) }), el('td', { text: eur(r.beneficio_esperado) }), el('td', { class: 'neg', text: eur(imp) }));
     tb.append(tr);
@@ -422,7 +422,7 @@ function render() {
   m.append(el('details', { class: 'foot' }, el('summary', { text: 'Cómo se calculan las cifras' }),
     el('p', { text: 'Datos extraídos del área privada de Urbanitae (Mis inversiones y Cartera de inversión). Importes en bruto: Urbanitae retiene el 19 % de los rendimientos al pagar; en «Movimientos» se ven los netos.' }),
     el('p', { text: '«Total esperado» y la rentabilidad total salen de la previsión de devolución que Urbanitae publica por proyecto. El vencimiento es el trimestre previsto por Urbanitae.' }),
-    el('p', { text: '*La TIR anual es un cálculo aproximado a partir de la fecha de inversión, los cobros y lo pendiente al vencimiento (mitad del trimestre).' }),
+    el('p', { text: '*TIR anual: la que publica Urbanitae cuando la da (proyectos cerrados y algunas carteras); en el resto, un cálculo aproximado a partir de la fecha de inversión, los cobros y lo pendiente al vencimiento (mitad del trimestre).' }),
     el('p', { text: 'Algunos proyectos con pagos parciales llevan una nota: el calendario de Urbanitae no reparte todo lo que falta por cobrar, y aquí se suma al trimestre de vencimiento.' })));
 }
 

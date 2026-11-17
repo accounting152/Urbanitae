@@ -50,7 +50,7 @@ details.ub-foot summary { cursor: pointer; }
 
 <div class="ub">
   <h1 class="ub-title" id="titulo">Inversiones en Urbanitae</h1>
-  <div class="ub-bar" id="titulares"><select class="dash-select" id="filtro-titular" aria-label="Titular"><option value="">Todos</option><option value="fj">Yo</option><option value="padre">Padre</option></select></div>
+  <div class="ub-bar" id="titulares"><select class="dash-select" id="filtro-titular" aria-label="Titular"><option value="">Todos</option><option value="fj">Yo</option><option value="padre">Padre</option><option value="madre">Madre</option></select></div>
   <p class="ub-lede" id="resumen-frase">Tienes <b data-draw="t-inv" data-source="kpis" data-row="0" data-field="invertido_en_curso">—</b> invertidos en <b data-draw="t-n" data-source="kpis" data-row="0" data-field="n_en_curso">—</b> proyectos en curso. Urbanitae prevé devolverte <b data-draw="t-tot" data-source="kpis" data-row="0" data-field="total_esperado">—</b>, un beneficio de <b data-draw="t-ben" data-source="kpis" data-row="0" data-field="beneficio_esperado">—</b> (<b data-draw="t-rent" data-source="kpis" data-row="0" data-field="rentabilidad_pct">—</b>). El próximo vencimiento previsto es <b data-draw="t-prox" data-source="kpis" data-row="0" data-field="proximo_proyecto">—</b> en <b data-draw="t-proxq" data-source="kpis" data-row="0" data-field="proximo_trimestre">—</b>.</p>
 
   <div class="ub-tabs" role="tablist" id="pestanas">
@@ -111,7 +111,7 @@ details.ub-foot summary { cursor: pointer; }
         <option value="fecha_inversion">Ordenar por fecha de inversión</option>
         <option value="importe_invertido">Ordenar por importe</option>
         <option value="rentabilidad_total_pct">Ordenar por rentabilidad</option>
-        <option value="tir_calculada_pct">Ordenar por TIR</option>
+        <option value="tir_anual_pct">Ordenar por TIR</option>
       </select>
     </div>
     <div class="ub-card" id="tabla-inversiones">
@@ -129,7 +129,7 @@ details.ub-foot summary { cursor: pointer; }
             <th data-field="total_esperado_bruto">Total esperado</th>
             <th data-field="beneficio_esperado">Beneficio</th>
             <th data-field="rentabilidad_total_pct">Rentab. total</th>
-            <th data-field="tir_calculada_pct">TIR anual*</th>
+            <th data-field="tir_anual_pct">TIR anual*</th>
             <th data-field="vencimiento_trimestre">Vencimiento</th>
             <th data-field="meses_hasta_vencimiento">Meses</th>
           </tr></thead>
@@ -293,7 +293,7 @@ dash.calc('pivote', {
     return inversiones.filter((r) => r.estado === 'En curso').map((r) => {
       const fila = {
         id: r.id, titular: r.titular, proyecto: r.proyecto, modelo: r.modelo,
-        tir: r.tir_calculada_pct === null || r.tir_calculada_pct === '' ? null : +r.tir_calculada_pct,
+        tir: r.tir_anual_pct === null || r.tir_anual_pct === '' ? null : +r.tir_anual_pct,
         rentabilidad: +r.rentabilidad_total_pct, meses: r.meses_hasta_vencimiento === '' ? null : +r.meses_hasta_vencimiento,
         invertido: +r.importe_invertido, cobrado: +r.cobrado_bruto,
         total: +r.pendiente_hasta_total_bruto, ganancia: +r.beneficio_esperado,
@@ -491,7 +491,7 @@ dash.calc('pivote_total', {
     const rows = filas(); tb.replaceChildren(); if (!rows) return;
     const fs = document.getElementById('filtro-estado'), os = document.getElementById('orden-inv');
     const estado = fs ? fs.value : 'En curso', orden = os ? os.value : 'vencimiento_estimado';
-    const num = ['importe_invertido', 'rentabilidad_total_pct', 'tir_calculada_pct'].includes(orden);
+    const num = ['importe_invertido', 'rentabilidad_total_pct', 'tir_anual_pct'].includes(orden);
     rows.filter((r) => !estado || r.estado === estado)
       .sort((a, b) => (num ? d3.descending(n(a[orden]), n(b[orden])) : d3.ascending(a[orden] || '9999', b[orden] || '9999')))
       .forEach((r) => {
@@ -501,7 +501,7 @@ dash.calc('pivote_total', {
         td(tr, r.modelo, 'ub-l'); td(tr, fechaDe(r.fecha_inversion));
         td(tr, eur(n(r.importe_invertido))); td(tr, eur(n(r.cobrado_bruto)));
         td(tr, eur(n(r.total_esperado_bruto))); td(tr, eur(n(r.beneficio_esperado)));
-        td(tr, pct(n(r.rentabilidad_total_pct))); td(tr, pct(n(r.tir_calculada_pct)));
+        td(tr, pct(n(r.rentabilidad_total_pct))); td(tr, pct(n(r.tir_anual_pct)));
         td(tr, r.estado === 'En curso' ? trim(r.vencimiento_trimestre) : r.estado); td(tr, r.meses_hasta_vencimiento || '—');
         tb.appendChild(tr);
       });

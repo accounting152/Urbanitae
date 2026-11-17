@@ -115,6 +115,9 @@ def build(titular):
             "beneficio_esperado": round(total_esperado - imp, 2),
             "rentabilidad_total_pct": round((total_esperado / imp - 1) * 100, 2),
             "tir_calculada_pct": xirr(flows),
+            # TIR a mostrar: la actualizada/real de Urbanitae si la hay; si no, la calculada.
+            "tir_anual_pct": num(r["actual_irr"]) if num(r["actual_irr"]) is not None else xirr(flows),
+            "tir_fuente": "Urbanitae" if num(r["actual_irr"]) is not None else "calculada",
             "tir_objetivo_pct": num(r["target_irr"]), "tir_real_pct": num(r["actual_irr"]),
             "plazo_objetivo_meses": num(r["plazo_obj_meses"]), "plazo_real_meses": num(r["plazo_real_meses"]),
             "vencimiento_trimestre": venc_q, "vencimiento_estimado": venc[:10],

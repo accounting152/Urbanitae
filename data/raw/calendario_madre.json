@@ -1,0 +1,15 @@
+{"fuente": "urbanitae.com/es/menuPrivado/cartera/ (paymentPeriods, totalRefunds y rentabilidad por proyecto), cuenta de la madre, extraído 2026-11-17",
+"paymentPeriods": [
+["P000328",null,"Q4","2026",7932,false],
+["P000336",null,"Q3","2027",13905,false],
+["P000340",null,"Q3","2027",7250,false],
+["P000343",null,"Q2","2029",18843,false],
+["P000345",null,"Q1","2027",11033.6,false],
+["P000346",null,"Q1","2027",5120,false]
+],
+"paymentPeriods_campos": ["projectId","paymentDate","quarter","year","amount","completed"],
+"totalRefunds": {"P000328":7932,"P000336":13950,"P000340":7150,"P000343":18843,"P000345":11033.6,"P000346":5120},
+"resumen_cartera": {"invertido_total":43620,"invertido_activo":43620,"invertido_cerrado":0,"prestamo":12620,"plusvalia":31000,"rentas":0,
+ "tir_estimada_prestamo":14,"tir_actualizada_prestamo":14,"rent_actualizada_prestamo":28,
+ "tir_estimada_plusvalia":17.18,"tir_actualizada_plusvalia":15.89,"rent_estimada_plusvalia":54.76,"rent_actualizada_plusvalia":54.44}
+}

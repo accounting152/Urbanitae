@@ -1,0 +1,21 @@
+{
+  "invertido_total": 43620,
+  "invertido_activo": 43620,
+  "invertido_cerrado": 0,
+  "prestamo": 12620,
+  "plusvalia": 31000,
+  "rentas": 0,
+  "tir_estimada_prestamo": 14,
+  "tir_actualizada_prestamo": 14,
+  "rent_actualizada_prestamo": 28,
+  "tir_estimada_plusvalia": 17.18,
+  "tir_actualizada_plusvalia": 15.89,
+  "rent_estimada_plusvalia": 54.76,
+  "rent_actualizada_plusvalia": 54.44,
+  "titular": "madre",
+  "n_inversiones": 6,
+  "n_en_curso": 6,
+  "capital_activo": 43620.0,
+  "cobrado_bruto": 0,
+  "pendiente_bruto": 64083.6
+}
