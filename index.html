@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Urbanitae · Inversiones</title>
+<meta name="theme-color" content="#123B34">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Urbanitae">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root {
+  --bg: #F6F5F1; --panel: #FFFFFF; --fg: #1C2321; --mut: #66706D; --line: #E3E1DA;
+  --acc: #1F7A68; --acc2: #9CC9BD; --warn: #A86A12; --bad: #B23B3B; --ok: #2E7D4F; --chip: #EEF4F2;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0F1513; --panel: #17201D; --fg: #E8EDEB; --mut: #9AA6A2; --line: #26322E; --acc: #4FB89F; --acc2: #2D5F54; --warn: #E0A64A; --bad: #E07070; --ok: #6CC08F; --chip: #1E2B27; }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-text-size-adjust: 100%; }
+body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+.num { font-variant-numeric: tabular-nums; }
+button, select, input { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+
+/* Bloqueo */
+#lock { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+.lockbox { width: 100%; max-width: 340px; text-align: center; }
+.lockbox img { width: 72px; height: 72px; border-radius: 18px; }
+.lockbox h1 { font-size: 22px; margin: 14px 0 4px; }
+.lockbox p { color: var(--mut); margin: 0 0 18px; }
+.lockbox input[type=password] { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); }
+.lockbox label { display: flex; gap: 8px; align-items: center; justify-content: center; margin: 12px 0; color: var(--mut); font-size: 14px; }
+.btn { appearance: none; border: 0; background: var(--acc); color: #fff; padding: 12px 18px; border-radius: 10px; width: 100%; font-weight: 600; cursor: pointer; }
+.btn:disabled { opacity: .6; }
+#err { color: var(--bad); min-height: 1.4em; margin-top: 10px; font-size: 14px; }
+
+/* App */
+header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topbar { display: flex; align-items: center; gap: 10px; padding: 12px 16px 6px; max-width: 1200px; margin: 0 auto; }
+.topbar h1 { font-size: 18px; margin: 0; flex: 1; }
+.topbar select { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+.iconbtn { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; cursor: pointer; color: var(--mut); }
+.tabs { display: flex; gap: 4px; overflow-x: auto; padding: 0 12px; max-width: 1200px; margin: 0 auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { flex: 0 0 auto; background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 10px; color: var(--mut); cursor: pointer; white-space: nowrap; }
+.tabs button.on { color: var(--fg); border-bottom-color: var(--acc); font-weight: 600; }
+main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+.lede { color: var(--mut); margin: 0 0 16px; }
+.lede b { color: var(--fg); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; }
+.kpi .l { font-size: 12px; color: var(--mut); }
+.kpi .v { font-size: 22px; font-weight: 650; margin-top: 4px; }
+.kpi .s { font-size: 12px; color: var(--mut); margin-top: 2px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin-bottom: 16px; }
+h2 { font-size: 16px; margin: 0 0 2px; }
+.cap { font-size: 12.5px; color: var(--mut); margin: 0 0 12px; }
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text { fill: var(--mut); font-size: 11px; }
+.legend { display: flex; gap: 14px; font-size: 12px; color: var(--mut); margin-bottom: 6px; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 6px 20px rgba(0,0,0,.15); border-radius: 8px; padding: 6px 9px; font-size: 12px; white-space: nowrap; z-index: 3; }
+.tip span { color: var(--mut); }
+.scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13.5px; }
+th, td { padding: 7px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th { font-size: 11.5px; color: var(--mut); font-weight: 600; }
+th.l, td.l { text-align: left; }
+td.name { white-space: normal; min-width: 12rem; text-align: left; }
+td.name a { color: inherit; text-decoration: none; }
+.note { display: block; font-size: 11.5px; color: var(--warn); }
+.sub { display: block; font-size: 11.5px; color: var(--mut); }
+tr.grp td { background: var(--chip); font-weight: 600; text-align: left; }
+.neg { color: var(--bad); }
+.pill { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 99px; background: var(--chip); color: var(--mut); }
+.bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.bar select { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+.pivot th, .pivot td { padding: 5px 7px; }
+.pivot thead th { background: var(--chip); }
+.pivot .y { text-align: center; border-left: 1px solid var(--line); }
+.pivot .q0 { border-left: 1px solid var(--line); }
+.pivot .stk { position: sticky; left: 0; background: var(--panel); z-index: 1; text-align: left; white-space: normal; min-width: 11rem; }
+.pivot thead .stk { background: var(--chip); }
+.pivot tfoot td { font-weight: 650; border-top: 2px solid var(--mut); }
+.pivot .tot { font-weight: 650; }
+/* Lista de tarjetas en el móvil */
+.cards { display: none; }
+@media (max-width: 640px) {
+  .wide-only { display: none; }
+  .cards { display: grid; gap: 10px; }
+  .kpi .v { font-size: 19px; }
+  td.name { min-width: 0; }
+  th, td { padding: 7px 5px; }
+}
+.icard .h { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.icard .h a { color: inherit; text-decoration: none; font-weight: 600; }
+.icard dl { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 10px 0 0; }
+.icard dt { font-size: 11px; color: var(--mut); }
+.icard dd { margin: 0; font-variant-numeric: tabular-nums; }
+details.foot { margin: 20px 0 8px; font-size: 12.5px; color: var(--mut); }
+details.foot summary { cursor: pointer; }
+.updated { font-size: 12px; color: var(--mut); margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<section id="lock">
+  <form class="lockbox" id="lockForm" autocomplete="on">
+    <img src="icon-192.png" alt="">
+    <h1>Inversiones Urbanitae</h1>
+    <p>Introduce la contraseña para ver los datos.</p>
+    <input type="text" name="username" value="urbanitae" autocomplete="username" hidden>
+    <input type="password" id="pw" autocomplete="current-password" placeholder="Contraseña" required>
+    <label><input type="checkbox" id="remember" checked> Recordar en este dispositivo</label>
+    <button class="btn" id="unlockBtn" type="submit">Entrar</button>
+    <div id="err" role="alert"></div>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header class="top">
+    <div class="topbar">
+      <h1>Urbanitae</h1>
+      <select id="titular" aria-label="Titular"></select>
+      <button class="iconbtn" id="lockBtn" title="Bloquear" aria-label="Bloquear">🔒</button>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button data-tab="resumen" class="on">Resumen</button>
+      <button data-tab="inversiones">Inversiones</button>
+      <button data-tab="calendario">Calendario de pagos</button>
+      <button data-tab="tabla">Tabla por trimestres</button>
+    </nav>
+  </header>
+  <main id="main"></main>
+</div>
+
+<script>
+'use strict';
+/* ---------- utilidades ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'class') e.className = v; else if (k === 'text') e.textContent = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v);
+  }
+  for (const k of kids.flat()) if (k !== null && k !== undefined && k !== false) e.append(k instanceof Node ? k : String(k));
+  return e;
+};
+const SVG = 'http://www.w3.org/2000/svg';
+const sv = (tag, attrs = {}) => { const e = document.createElementNS(SVG, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
+const nf = (d) => new Intl.NumberFormat('es-ES', { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: 'always' });
+const eur = (v) => (v === null || v === undefined || isNaN(v) ? '—' : nf(0).format(Math.round(v)) + ' €');
+const eur2 = (v) => (v === null || v === undefined || isNaN(v) ? '—' : nf(2).format(v) + ' €');
+const pct = (v) => (v === null || v === undefined || isNaN(v) ? '—' : nf(1).format(v) + ' %');
+const kfmt = (v) => (v >= 1000 ? nf(0).format(v / 1000) + 'k' : nf(0).format(v));
+const fdate = (s) => { if (!s) return '—'; const [y, m, d] = s.slice(0, 10).split('-'); return `${d}/${m}/${y}`; };
+const trim = (q) => (q ? q.replace(/^(\d{4})-Q(\d)$/, '$2T $1') : '—');
+const sum = (a, f) => a.reduce((s, x) => s + (+f(x) || 0), 0);
+const by = (f, desc) => (a, b) => { const x = f(a), y = f(b); return (x < y ? -1 : x > y ? 1 : 0) * (desc ? -1 : 1); };
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, del: (k) => { try { localStorage.removeItem(k); } catch (e) {} } };
+const safeUrl = (u) => (/^https:\/\/urbanitae\.com\//.test(u || '') ? u : null);
+
+/* ---------- cifrado ---------- */
+const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+async function decrypt(pw) {
+  const res = await fetch('data.enc.json', { cache: 'no-cache' });
+  if (!res.ok) throw new Error('net');
+  const pkg = await res.json();
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(pkg.salt), iterations: pkg.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(pkg.iv) }, key, b64(pkg.data));
+  if (pkg.z) { const ds = new Blob([plain]).stream().pipeThrough(new DecompressionStream('gzip')); return JSON.parse(await new Response(ds).text()); }
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+let D = null;
+const state = { tab: 'resumen', titular: store.get('urb-titular') || '', estado: 'En curso', orden: 'vencimiento_estimado' };
+
+async function unlock(pw, remember) {
+  const btn = $('#unlockBtn'); btn.disabled = true; btn.textContent = 'Abriendo…'; $('#err').textContent = '';
+  try {
+    D = await decrypt(pw);
+    if (remember) store.set('urb-pw', pw); else store.del('urb-pw');
+    $('#lock').hidden = true; $('#app').hidden = false;
+    fillTitulares();
+    const h = location.hash.slice(1);
+    go(['resumen', 'inversiones', 'calendario', 'tabla'].includes(h) ? h : 'resumen');
+  } catch (e) {
+    store.del('urb-pw');
+    $('#err').textContent = e.message === 'net' ? 'No se pudieron descargar los datos. Revisa la conexión.' : 'Contraseña incorrecta.';
+  } finally { btn.disabled = false; btn.textContent = 'Entrar'; }
+}
+$('#lockForm').addEventListener('submit', (e) => { e.preventDefault(); unlock($('#pw').value.trim(), $('#remember').checked); });
+$('#lockBtn').addEventListener('click', () => { store.del('urb-pw'); D = null; $('#main').replaceChildren(); $('#pw').value = ''; $('#app').hidden = true; $('#lock').hidden = false; });
+const saved = store.get('urb-pw'); if (saved) unlock(saved, true);
+
+function fillTitulares() {
+  const s = $('#titular'); s.replaceChildren();
+  const ts = Object.entries(D.titulares || {});
+  if (ts.length > 1) s.append(el('option', { value: '', text: 'Todos' }));
+  ts.forEach(([k, v]) => s.append(el('option', { value: k, text: v })));
+  if (!ts.some(([k]) => k === state.titular)) state.titular = ts.length > 1 ? '' : (ts[0] || [''])[0];
+  s.value = state.titular; s.hidden = ts.length < 2 && false;
+  s.onchange = () => { state.titular = s.value; store.set('urb-titular', s.value); render(); };
+}
+
+/* ---------- navegación ---------- */
+document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => go(b.dataset.tab)));
+function go(tab) {
+  state.tab = tab;
+  document.querySelectorAll('.tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === tab));
+  history.replaceState(null, '', '#' + tab);
+  render(); window.scrollTo(0, 0);
+}
+let rT; window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => D && render(), 150); });
+
+/* ---------- datos derivados ---------- */
+function data() {
+  const t = state.titular;
+  const inv = D.inversiones.filter((r) => !t || r.titular === t);
+  const pag = D.pagos.filter((p) => !t || p.titular === t);
+  const curso = inv.filter((r) => r.estado === 'En curso');
+  const invC = sum(curso, (r) => r.importe_invertido), totC = sum(curso, (r) => r.total_esperado_bruto);
+  const prox = curso.filter((r) => r.vencimiento_estimado).sort(by((r) => r.vencimiento_estimado))[0];
+  const k = {
+    invertido_en_curso: invC, invertido_total: sum(inv, (r) => r.importe_invertido), n_en_curso: curso.length, n_total: inv.length,
+    capital_activo: sum(inv, (r) => r.capital_activo), cobrado: sum(pag.filter((p) => p.estado === 'cobrado'), (p) => p.importe_bruto),
+    pendiente: sum(curso, (r) => r.pendiente_hasta_total_bruto), total_esperado: totC, beneficio: totC - invC,
+    rentabilidad: invC ? (totC / invC - 1) * 100 : null, prox,
+  };
+  const q = new Map(); const gq = (x) => q.get(x) || (q.set(x, { q: x, cobrado: 0, previsto: 0 }), q.get(x));
+  pag.filter((p) => p.estado === 'cobrado').forEach((p) => { gq(p.trimestre).cobrado += p.importe_bruto; });
+  curso.filter((r) => r.vencimiento_trimestre).forEach((r) => { gq(r.vencimiento_trimestre).previsto += r.pendiente_hasta_total_bruto; });
+  const porTrim = [...q.values()].sort(by((x) => x.q));
+  const ya = new Map(); curso.filter((r) => r.vencimiento_trimestre).forEach((r) => { const y = r.vencimiento_trimestre.slice(0, 4); ya.set(y, (ya.get(y) || 0) + r.pendiente_hasta_total_bruto); });
+  const porAnio = [...ya.entries()].sort().map(([y, v]) => ({ q: y, previsto: v }));
+  const mm = new Map(); curso.forEach((r) => { const m = mm.get(r.modelo) || { modelo: r.modelo, invertido: 0, beneficio: 0, n: 0 }; m.invertido += r.importe_invertido; m.beneficio += r.beneficio_esperado; m.n++; mm.set(r.modelo, m); });
+  return { inv, pag, curso, k, porTrim, porAnio, porModelo: [...mm.values()].sort(by((m) => m.invertido, true)) };
+}
+
+/* ---------- gráficos ---------- */
+function tooltip(box) {
+  const t = el('div', { class: 'tip', hidden: true }); box.append(t);
+  return {
+    show(ev, lines) {
+      t.replaceChildren(...lines.map(([a, b], i) => (i === 0 ? el('div', { style: 'font-weight:600', text: a }) : el('div', {}, el('span', { text: a + ': ' }), b))));
+      t.hidden = false;
+      const r = box.getBoundingClientRect(), p = ev.touches ? ev.touches[0] : ev;
+      let x = p.clientX - r.left + 12; const y = Math.max(0, p.clientY - r.top - 40);
+      if (x + t.offsetWidth > r.width) x = Math.max(0, p.clientX - r.left - t.offsetWidth - 12);
+      t.style.left = x + 'px'; t.style.top = y + 'px';
+    },
+    hide() { t.hidden = true; },
+  };
+}
+function niceMax(v) { if (v <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(v))); const n = v / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p; }
+
+function columns(box, rows, { keys, colors, names, label, height = 230 }) {
+  const W = Math.max(280, box.clientWidth || 320), H = height, mb = 22, mt = 14;
+  const max = niceMax(Math.max(1, ...rows.map((r) => sum(keys, (k) => r[k] || 0))));
+  const ticks = [0, .25, .5, .75, 1].map((f) => f * max);
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': box.getAttribute('aria-label') || '' });
+  box.append(svg);
+  const tl = ticks.map((t) => { const x = sv('text', { x: 0, y: 0 }); x.textContent = kfmt(t); svg.append(x); return x; });
+  const ml = Math.ceil(Math.max(...tl.map((x) => x.getComputedTextLength() || 24))) + 8;
+  const y = (v) => H - mb - (v / max) * (H - mb - mt);
+  ticks.forEach((t, i) => { tl[i].setAttribute('x', ml - 6); tl[i].setAttribute('y', y(t) + 4); tl[i].setAttribute('text-anchor', 'end'); svg.insertBefore(sv('line', { x1: ml, x2: W, y1: y(t), y2: y(t), stroke: 'var(--line)' }), svg.firstChild); });
+  const step = (W - ml - 14) / rows.length, bw = Math.max(4, step * .68);
+  const every = Math.ceil(rows.length / Math.max(1, Math.floor((W - ml) / 44)));
+  const tip = tooltip(box);
+  rows.forEach((r, i) => {
+    const x = ml + i * step + (step - bw) / 2; let acc = 0;
+    keys.forEach((k, j) => { const v = r[k] || 0; if (!v) return; svg.append(sv('rect', { x, width: bw, y: y(acc + v), height: Math.max(1, y(acc) - y(acc + v)), rx: 2, fill: colors[j] })); acc += v; });
+    if (i % every === 0) { const t = sv('text', { x: x + bw / 2, y: H - 6, 'text-anchor': 'middle' }); t.textContent = label(r.q); svg.append(t); }
+    if (acc && bw > 30) { const t = sv('text', { x: x + bw / 2, y: y(acc) - 4, 'text-anchor': 'middle' }); t.textContent = kfmt(acc); svg.append(t); }
+    const hit = sv('rect', { x: ml + i * step, width: step, y: 0, height: H - mb, fill: 'transparent' });
+    const show = (ev) => tip.show(ev, [[label(r.q, true)], ...keys.filter((k) => r[k]).map((k) => [names[keys.indexOf(k)], eur(r[k])])]);
+    hit.addEventListener('pointermove', show); hit.addEventListener('pointerdown', show); hit.addEventListener('pointerleave', () => tip.hide());
+    svg.append(hit);
+  });
+}
+
+function hbars(box, rows) {
+  const W = Math.max(280, box.clientWidth || 320), rh = 34, H = rows.length * rh + 4;
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Invertido y beneficio esperado por tipo' }); box.append(svg);
+  const labs = rows.map((r, i) => { const t = sv('text', { x: 0, y: i * rh + rh / 2 + 4 }); t.textContent = r.modelo; svg.append(t); return t; });
+  const ml = Math.max(...labs.map((t) => t.getComputedTextLength() || 60)) + 10;
+  const ends = rows.map((r) => eur(r.invertido) + ' + ' + eur(r.beneficio));
+  const probe = sv('text', {}); probe.textContent = ends.reduce((a, b) => (a.length > b.length ? a : b), ''); svg.append(probe);
+  const mr = (probe.getComputedTextLength() || 120) + 8; probe.remove();
+  const max = Math.max(1, ...rows.map((r) => r.invertido + r.beneficio)), x = (v) => ml + (v / max) * Math.max(40, W - ml - mr);
+  const tip = tooltip(box);
+  rows.forEach((r, i) => {
+    const y0 = i * rh + 6, h = rh - 12;
+    svg.append(sv('rect', { x: ml, y: y0, height: h, width: x(r.invertido) - ml, rx: 2, fill: 'var(--acc2)' }));
+    svg.append(sv('rect', { x: x(r.invertido), y: y0, height: h, width: Math.max(0, x(r.invertido + r.beneficio) - x(r.invertido)), rx: 2, fill: 'var(--acc)' }));
+    const t = sv('text', { x: x(r.invertido + r.beneficio) + 6, y: y0 + h / 2 + 4 }); t.textContent = ends[i]; svg.append(t);
+    const hit = sv('rect', { x: 0, y: i * rh, width: W, height: rh, fill: 'transparent' });
+    const show = (ev) => tip.show(ev, [[r.modelo], ['Proyectos', String(r.n)], ['Invertido', eur(r.invertido)], ['Beneficio esperado', eur(r.beneficio)]]);
+    hit.addEventListener('pointermove', show); hit.addEventListener('pointerdown', show); hit.addEventListener('pointerleave', () => tip.hide());
+    svg.append(hit);
+  });
+}
+
+/* ---------- vistas ---------- */
+const nameCell = (r, nota) => el('td', { class: 'name' }, safeUrl(r.url) ? el('a', { href: r.url, target: '_blank', rel: 'noopener', text: r.proyecto }) : r.proyecto, nota && r.nota ? el('span', { class: 'note', text: r.nota }) : null);
+const titName = (k) => (D.titulares || {})[k] || k;
+const multi = () => !state.titular && Object.keys(D.titulares || {}).length > 1;
+
+function vResumen(x) {
+  const k = x.k, m = $('#main');
+  m.append(el('p', { class: 'lede' }, 'Tienes ', el('b', { text: eur(k.invertido_en_curso) }), ' invertidos en ', el('b', { text: String(k.n_en_curso) }), ' proyectos en curso. Urbanitae prevé devolverte ', el('b', { text: eur(k.total_esperado) }), ', un beneficio de ', el('b', { text: eur(k.beneficio) }), ' (', el('b', { text: '+' + pct(k.rentabilidad) }), ').', k.prox ? [' El próximo vencimiento previsto es ', el('b', { text: k.prox.proyecto }), ' en ', el('b', { text: trim(k.prox.vencimiento_trimestre) }), '.'] : null));
+  const kp = (l, v, s) => el('div', { class: 'card kpi' }, el('div', { class: 'l', text: l }), el('div', { class: 'v num', text: v }), s ? el('div', { class: 's', text: s }) : null);
+  m.append(el('div', { class: 'kpis' },
+    kp('Invertido en curso', eur(k.invertido_en_curso), 'Histórico ' + eur(k.invertido_total)),
+    kp('Capital activo', eur(k.capital_activo), 'Aún no devuelto'),
+    kp('Cobrado hasta hoy', eur(k.cobrado), 'Capital e intereses, bruto'),
+    kp('Pendiente de cobrar', eur(k.pendiente), 'Previsto, bruto'),
+    kp('Beneficio esperado', eur(k.beneficio), 'En curso, antes de impuestos'),
+    kp('Rentabilidad esperada', pct(k.rentabilidad), 'Total, ponderada')));
+  const c1 = el('div', { class: 'chart', 'aria-label': 'Devoluciones previstas por año' });
+  const c2 = el('div', { class: 'chart' });
+  m.append(el('div', { class: 'grid2' },
+    el('div', { class: 'card' }, el('h2', { text: 'Devoluciones previstas por año' }), el('p', { class: 'cap', text: 'Lo que falta por cobrar de los proyectos en curso, por año de vencimiento.' }), c1),
+    el('div', { class: 'card' }, el('h2', { text: 'Capital por tipo' }), el('p', { class: 'cap', text: 'Proyectos en curso: invertido y beneficio esperado.' }),
+      el('div', { class: 'legend' }, el('span', {}, el('i', { class: 'sw', style: 'background:var(--acc2)' }), 'Invertido'), el('span', {}, el('i', { class: 'sw', style: 'background:var(--acc)' }), 'Beneficio')), c2)));
+  columns(c1, x.porAnio, { keys: ['previsto'], colors: ['var(--acc)'], names: ['Previsto'], label: (q) => q });
+  hbars(c2, x.porModelo);
+  const tb = el('tbody');
+  x.curso.filter((r) => r.vencimiento_estimado).sort(by((r) => r.vencimiento_estimado)).slice(0, 6).forEach((r) => tb.append(el('tr', {}, nameCell(r), el('td', { text: trim(r.vencimiento_trimestre) }), el('td', { text: eur(r.pendiente_hasta_total_bruto) }), el('td', { text: pct(r.rentabilidad_total_pct) }))));
+  m.append(el('div', { class: 'card' }, el('h2', { text: 'Próximos vencimientos' }), el('p', { class: 'cap', text: 'Los seis proyectos en curso con devolución prevista más cercana.' }),
+    el('div', { class: 'scroll' }, el('table', {}, el('thead', {}, el('tr', {}, el('th', { class: 'l', text: 'Proyecto' }), el('th', { text: 'Vence' }), el('th', { text: 'Por cobrar' }), el('th', { text: 'Rentab.' }))), tb))));
+  m.append(el('div', { class: 'updated', text: 'Datos de Urbanitae del ' + fdate(D.generado) }));
+}
+
+function vInversiones(x) {
+  const m = $('#main');
+  const fe = el('select', { 'aria-label': 'Estado' }, ...[['En curso', 'En curso'], ['Cerrado', 'Cerradas'], ['Cancelado', 'Canceladas'], ['', 'Todas']].map(([v, t]) => el('option', { value: v, text: t })));
+  const fo = el('select', { 'aria-label': 'Ordenar' }, ...[['vencimiento_estimado', 'Por vencimiento'], ['fecha_inversion', 'Por fecha de inversión'], ['importe_invertido', 'Por importe'], ['rentabilidad_total_pct', 'Por rentabilidad'], ['tir_calculada_pct', 'Por TIR']].map(([v, t]) => el('option', { value: v, text: t })));
+  fe.value = state.estado; fo.value = state.orden;
+  fe.onchange = () => { state.estado = fe.value; render(); }; fo.onchange = () => { state.orden = fo.value; render(); };
+  m.append(el('div', { class: 'bar' }, fe, fo));
+  const numO = ['importe_invertido', 'rentabilidad_total_pct', 'tir_calculada_pct'].includes(state.orden);
+  const rows = x.inv.filter((r) => !state.estado || r.estado === state.estado).sort(numO ? by((r) => r[state.orden] ?? -1e9, true) : by((r) => r[state.orden] || '9999'));
+  const tot = { inv: sum(rows, (r) => r.importe_invertido), cob: sum(rows, (r) => r.cobrado_bruto), te: sum(rows, (r) => r.total_esperado_bruto) };
+  m.append(el('p', { class: 'cap' }, `${rows.length} proyectos · invertido `, el('b', { text: eur(tot.inv) }), ' · total esperado ', el('b', { text: eur(tot.te) }), '. Importes en bruto; «Total esperado» incluye el capital.'));
+  const tb = el('tbody');
+  rows.forEach((r) => tb.append(el('tr', {}, nameCell(r, true), multi() ? el('td', { class: 'l', text: titName(r.titular) }) : null, el('td', { class: 'l', text: r.modelo }), el('td', { text: fdate(r.fecha_inversion) }),
+    el('td', { text: eur(r.importe_invertido) }), el('td', { text: eur(r.cobrado_bruto) }), el('td', { text: eur(r.total_esperado_bruto) }), el('td', { text: eur(r.beneficio_esperado) }),
+    el('td', { text: pct(r.rentabilidad_total_pct) }), el('td', { text: pct(r.tir_calculada_pct) }), el('td', { text: r.estado === 'En curso' ? trim(r.vencimiento_trimestre) : r.estado }), el('td', { text: r.meses_hasta_vencimiento ?? '—' }))));
+  m.append(el('div', { class: 'card wide-only' }, el('div', { class: 'scroll' }, el('table', {},
+    el('thead', {}, el('tr', {}, el('th', { class: 'l', text: 'Proyecto' }), multi() ? el('th', { class: 'l', text: 'Titular' }) : null, el('th', { class: 'l', text: 'Tipo' }), el('th', { text: 'Invertido el' }), el('th', { text: 'Invertido' }), el('th', { text: 'Cobrado' }), el('th', { text: 'Total esperado' }), el('th', { text: 'Beneficio' }), el('th', { text: 'Rentab. total' }), el('th', { text: 'TIR anual*' }), el('th', { text: 'Vencimiento' }), el('th', { text: 'Meses' }))), tb))));
+  const cards = el('div', { class: 'cards' });
+  rows.forEach((r) => cards.append(el('div', { class: 'card icard' },
+    el('div', { class: 'h' }, safeUrl(r.url) ? el('a', { href: r.url, target: '_blank', rel: 'noopener', text: r.proyecto }) : el('b', { text: r.proyecto }), el('span', { class: 'pill', text: r.modelo })),
+    multi() ? el('span', { class: 'sub', text: titName(r.titular) }) : null,
+    r.nota ? el('span', { class: 'note', text: r.nota }) : null,
+    el('dl', {}, el('div', {}, el('dt', { text: 'Invertido' }), el('dd', { text: eur(r.importe_invertido) })), el('div', {}, el('dt', { text: 'Total esperado' }), el('dd', { text: eur(r.total_esperado_bruto) })),
+      el('div', {}, el('dt', { text: 'Rentab. total' }), el('dd', { text: pct(r.rentabilidad_total_pct) })), el('div', {}, el('dt', { text: 'TIR anual*' }), el('dd', { text: pct(r.tir_calculada_pct) })),
+      el('div', {}, el('dt', { text: 'Cobrado' }), el('dd', { text: eur(r.cobrado_bruto) })), el('div', {}, el('dt', { text: r.estado === 'En curso' ? 'Vence' : 'Estado' }), el('dd', { text: r.estado === 'En curso' ? trim(r.vencimiento_trimestre) : r.estado }))))));
+  m.append(cards);
+}
+
+function vCalendario(x) {
+  const m = $('#main');
+  const c = el('div', { class: 'chart', 'aria-label': 'Cobros recibidos y previstos por trimestre' });
+  m.append(el('div', { class: 'card', style: 'margin-bottom:16px' }, el('h2', { text: 'Cobros por trimestre' }), el('p', { class: 'cap', text: 'Cobrado (pagos recibidos) y previsto (lo pendiente de cada proyecto, en su trimestre de vencimiento).' }),
+    el('div', { class: 'legend' }, el('span', {}, el('i', { class: 'sw', style: 'background:var(--acc2)' }), 'Cobrado'), el('span', {}, el('i', { class: 'sw', style: 'background:var(--acc)' }), 'Previsto')), c));
+  columns(c, x.porTrim, { keys: ['cobrado', 'previsto'], colors: ['var(--acc2)', 'var(--acc)'], names: ['Cobrado', 'Previsto'], label: (q, long) => (long ? trim(q) : trim(q).replace(' 20', " '")), height: 260 });
+  const tp = el('tbody'); const groups = new Map();
+  x.curso.filter((r) => r.vencimiento_trimestre).forEach((r) => { const g = groups.get(r.vencimiento_trimestre) || []; g.push(r); groups.set(r.vencimiento_trimestre, g); });
+  [...groups.entries()].sort(by((g) => g[0])).forEach(([q, g]) => {
+    tp.append(el('tr', { class: 'grp' }, el('td', { colspan: 2, text: trim(q) + ' · ' + eur(sum(g, (r) => r.pendiente_hasta_total_bruto)) })));
+    g.sort(by((r) => r.pendiente_hasta_total_bruto, true)).forEach((r) => tp.append(el('tr', {}, el('td', { class: 'name' }, safeUrl(r.url) ? el('a', { href: r.url, target: '_blank', rel: 'noopener', text: r.proyecto }) : r.proyecto, el('span', { class: 'sub', text: (multi() ? titName(r.titular) + ' · ' : '') + 'Invertido ' + eur(r.importe_invertido) })), el('td', { text: eur(r.pendiente_hasta_total_bruto) }))));
+  });
+  const tc = el('tbody');
+  x.pag.filter((p) => p.estado === 'cobrado').sort(by((p) => p.fecha, true)).forEach((p) => tc.append(el('tr', {}, el('td', { class: 'l', text: fdate(p.fecha) }), el('td', { class: 'name' }, p.proyecto, multi() ? el('span', { class: 'sub', text: titName(p.titular) }) : null), el('td', { text: eur2(p.importe_bruto) }))));
+  m.append(el('div', { class: 'grid2' },
+    el('div', { class: 'card' }, el('h2', { text: 'Próximos cobros' }), el('p', { class: 'cap', text: 'Agrupados por trimestre previsto.' }), el('div', { class: 'scroll' }, el('table', {}, el('thead', {}, el('tr', {}, el('th', { class: 'l', text: 'Proyecto' }), el('th', { text: 'Importe' }))), tp))),
+    el('div', { class: 'card' }, el('h2', { text: 'Cobros recibidos' }), el('p', { class: 'cap', text: 'Del más reciente al más antiguo, en bruto.' }), el('div', { class: 'scroll' }, el('table', {}, el('thead', {}, el('tr', {}, el('th', { class: 'l', text: 'Fecha' }), el('th', { class: 'l', text: 'Proyecto' }), el('th', { text: 'Importe' }))), tc)))));
+}
+
+function vTabla(x) {
+  const TAX = 0.19, m = $('#main');
+  const rows = x.curso.slice().sort(by((r) => (titName(r.titular) + r.proyecto)));
+  const quarters = [...new Set(rows.map((r) => r.vencimiento_trimestre).filter(Boolean))].sort();
+  const years = []; quarters.forEach((q) => { const y = q.slice(0, 4); const last = years[years.length - 1]; if (last && last[0] === y) last[1].push(q); else years.push([y, [q]]); });
+  const r1 = el('tr', {}, el('th', { class: 'stk' }), el('th'), el('th'), el('th'), el('th'), el('th'));
+  const r2 = el('tr', {}, el('th', { class: 'stk', text: 'Proyecto' }), el('th', { class: 'l', text: 'Titular' }), el('th', { class: 'l', text: 'Tipo' }), el('th', { text: 'TIR*' }), el('th', { text: 'Total %' }), el('th', { text: 'Meses' }));
+  r1.append(el('th')); r2.append(el('th', { text: 'Invertido' }));
+  years.forEach(([y, qs]) => { r1.append(el('th', { class: 'y', colspan: qs.length, text: y })); qs.forEach((q, i) => r2.append(el('th', { class: i === 0 ? 'q0' : '', text: 'T' + q.slice(-1) }))); });
+  r1.append(el('th', { class: 'q0' }), el('th'), el('th')); r2.append(el('th', { class: 'q0', text: 'Total' }), el('th', { text: 'Ganancia' }), el('th', { text: 'Impuesto 19 %' }));
+  const tb = el('tbody'), T = { inv: 0, tot: 0, gan: 0, imp: 0, q: {} };
+  rows.forEach((r) => {
+    const imp = -r.beneficio_esperado * TAX, v = r.pendiente_hasta_total_bruto;
+    T.inv += r.importe_invertido; T.tot += v; T.gan += r.beneficio_esperado; T.imp += imp; T.q[r.vencimiento_trimestre] = (T.q[r.vencimiento_trimestre] || 0) + v;
+    const tr = el('tr', {}, el('td', { class: 'stk', text: r.proyecto }), el('td', { class: 'l', text: titName(r.titular) }), el('td', { class: 'l', text: r.modelo }), el('td', { text: pct(r.tir_calculada_pct) }), el('td', { text: pct(r.rentabilidad_total_pct) }), el('td', { text: r.meses_hasta_vencimiento ?? '—' }), el('td', { text: eur(r.importe_invertido) }));
+    years.forEach(([, qs]) => qs.forEach((q, i) => tr.append(el('td', { class: i === 0 ? 'q0' : '', text: r.vencimiento_trimestre === q ? eur(v) : '' }))));
+    tr.append(el('td', { class: 'q0 tot', text: eur(v) }), el('td', { text: eur(r.beneficio_esperado) }), el('td', { class: 'neg', text: eur(imp) }));
+    tb.append(tr);
+  });
+  const ft = el('tr', {}, el('td', { class: 'stk', text: 'Total' }), el('td'), el('td'), el('td'), el('td', { text: pct(T.inv ? (T.gan / T.inv) * 100 : null) }), el('td'), el('td', { text: eur(T.inv) }));
+  years.forEach(([, qs]) => qs.forEach((q, i) => ft.append(el('td', { class: i === 0 ? 'q0' : '', text: T.q[q] ? eur(T.q[q]) : '' }))));
+  ft.append(el('td', { class: 'q0', text: eur(T.tot) }), el('td', { text: eur(T.gan) }), el('td', { class: 'neg', text: eur(T.imp) }));
+  m.append(el('div', { class: 'card' }, el('h2', { text: 'Devolución esperada por trimestre' }), el('p', { class: 'cap', text: 'Proyectos en curso. Cada importe es lo que falta por cobrar, en el trimestre previsto. Impuesto estimado al 19 % sobre la ganancia. Desliza la tabla hacia los lados.' }),
+    el('div', { class: 'scroll' }, el('table', { class: 'pivot' }, el('thead', {}, r1, r2), tb, el('tfoot', {}, ft)))));
+}
+
+function render() {
+  if (!D) return;
+  const m = $('#main'); m.replaceChildren();
+  const x = data();
+  ({ resumen: vResumen, inversiones: vInversiones, calendario: vCalendario, tabla: vTabla })[state.tab](x);
+  m.append(el('details', { class: 'foot' }, el('summary', { text: 'Cómo se calculan las cifras' }),
+    el('p', { text: 'Datos extraídos del área privada de Urbanitae (Mis inversiones y Cartera de inversión). Importes en bruto: Urbanitae retiene el 19 % de los rendimientos al pagar; en «Movimientos» se ven los netos.' }),
+    el('p', { text: '«Total esperado» y la rentabilidad total salen de la previsión de devolución que Urbanitae publica por proyecto. El vencimiento es el trimestre previsto por Urbanitae.' }),
+    el('p', { text: '*La TIR anual es un cálculo aproximado a partir de la fecha de inversión, los cobros y lo pendiente al vencimiento (mitad del trimestre).' }),
+    el('p', { text: 'Algunos proyectos con pagos parciales llevan una nota: el calendario de Urbanitae no reparte todo lo que falta por cobrar, y aquí se suma al trimestre de vencimiento.' })));
+}
+
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+</script>
+</body>
+</html>
